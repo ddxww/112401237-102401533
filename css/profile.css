@@ -1,41 +1,320 @@
-.profile-screen, .my-posts-screen, .status-screen { min-height: 100vh; background: var(--ui-page); }
-.profile-page, .my-posts-page, .status-page { width: min(100%, 390px); min-height: 100vh; margin: 0 auto; padding: 24px 20px 104px; }
-.profile-header { display: flex; align-items: center; gap: 14px; margin-bottom: 24px; }
-.profile-avatar { display: grid; place-items: center; width: 70px; height: 70px; border-radius: 50%; color: var(--ui-blue); background: var(--ui-blue-soft); font-size: 28px; font-weight: 800; }
-.profile-header h1, .profile-header p { margin: 0; }
-.profile-header p { margin-top: 5px; color: var(--ui-muted); font-size: 13px; }
-.profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); margin-bottom: 24px; padding: 18px 8px; border-radius: var(--ui-radius); background: var(--ui-card, #fff); }
-.profile-stats div { display: grid; gap: 5px; text-align: center; }
-.profile-stats strong { color: var(--ui-ink); font-size: 24px; }
-.profile-stats span, .profile-shortcuts small { color: var(--ui-muted); font-size: 12px; }
-.profile-shortcuts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 26px; }
-.profile-shortcuts a { display: grid; justify-items: center; gap: 6px; min-height: 105px; padding: 13px 3px; border-radius: var(--ui-radius); color: var(--ui-ink); background: var(--ui-card, #fff); box-shadow: var(--ui-card-shadow, 0 6px 18px rgba(36,68,123,.08)); text-decoration: none; }
-.profile-shortcuts strong { font-size: 12px; white-space: nowrap; }
-.shortcut-icon { color: var(--ui-blue); }
-.shortcut-icon svg { width: 25px; height: 25px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
-.profile-section-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-.profile-section-heading h1, .profile-section-heading h2 { margin: 0; color: var(--ui-ink); font-size: 22px; }
-.profile-section-heading a { color: var(--ui-blue); font-size: 13px; text-decoration: none; }
-.profile-list { display: grid; gap: 12px; }
-.post-card { display: flex; gap: 13px; min-height: 118px; padding: 14px; border-radius: var(--ui-radius); background: var(--ui-card, #fff); box-shadow: var(--ui-card-shadow, 0 6px 18px rgba(36,68,123,.08)); }
-.post-icon { display: grid; flex: 0 0 64px; place-items: center; width: 64px; height: 64px; border-radius: calc(var(--ui-radius) - 4px); color: var(--ui-blue); background: var(--ui-blue-soft); }
-.post-icon svg { width: 30px; height: 30px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
-.post-copy { min-width: 0; flex: 1; }
-.post-meta { display: flex; gap: 8px; margin-bottom: 5px; color: var(--ui-blue); font-size: 11px; }
-.post-meta strong { color: var(--ui-orange); font-weight: 700; }
-.post-copy h3 { overflow: hidden; margin: 0 0 6px; color: var(--ui-ink); font-size: 17px; text-overflow: ellipsis; white-space: nowrap; }
-.post-copy p { margin: 0 0 8px; color: var(--ui-muted); font-size: 12px; }
-.post-action { display: inline-block; padding: 6px 10px; border-radius: 9px; color: var(--ui-blue); background: var(--ui-blue-soft); font-size: 11px; text-decoration: none; }
-.comment-card { padding: 14px; border-radius: var(--ui-radius); background: var(--ui-card, #fff); box-shadow: var(--ui-card-shadow, 0 6px 18px rgba(36,68,123,.08)); }
-.comment-card p { margin: 7px 0 0; color: var(--ui-muted); font-size: 13px; }
-.empty-state { padding: 32px 12px; color: var(--ui-muted); text-align: center; }
-.status-page h1 { margin: 0 0 20px; color: var(--ui-ink); font-size: 25px; }
-.status-item { margin-bottom: 22px; padding: 18px; border-radius: var(--ui-radius); background: var(--ui-card, #fff); box-shadow: var(--ui-card-shadow, 0 6px 18px rgba(36,68,123,.08)); }
-.status-item h2, .status-item p { margin: 0 0 8px; }
-.status-item p { color: var(--ui-muted); font-size: 13px; }
-.status-item > span { color: var(--ui-orange); font-size: 13px; font-weight: 700; }
-.status-page fieldset { display: grid; gap: 9px; margin: 0 0 18px; padding: 0; border: 0; }
-.status-page legend { margin-bottom: 5px; color: var(--ui-ink); font-weight: 700; }
-.status-page label { padding: 14px; border: 1px solid var(--ui-blue); border-radius: var(--ui-radius); color: var(--ui-blue); background: var(--ui-blue-soft); }
-.status-page input { margin-right: 8px; accent-color: var(--ui-blue); }
-.status-page .form-message { min-height: 20px; color: var(--ui-orange); font-size: 13px; }
+.profile-screen,
+.my-posts-screen,
+.status-screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--ui-page);
+}
+
+.profile-page,
+.my-posts-page,
+.status-page {
+  flex: 1 1 auto;
+  width: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 20px 16px 24px;
+  overflow-y: auto;
+}
+
+.profile-page .profile-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.profile-page .profile-avatar {
+  display: grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  color: var(--ui-blue);
+  background: var(--ui-blue-soft);
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.profile-page .profile-header h1,
+.profile-page .profile-header p {
+  margin: 0;
+}
+
+.profile-page .profile-header p {
+  margin-top: 5px;
+  color: var(--ui-muted);
+  font-size: 13px;
+}
+
+.profile-page .profile-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-bottom: 24px;
+  padding: 18px 8px;
+  border-radius: var(--ui-radius);
+  background: var(--ui-card, #fff);
+}
+
+.profile-page .profile-stats div {
+  display: grid;
+  gap: 5px;
+  text-align: center;
+}
+
+.profile-page .profile-stats strong {
+  color: var(--ui-ink);
+  font-size: 24px;
+}
+
+.profile-page .profile-stats span,
+.profile-page .profile-shortcuts small {
+  color: var(--ui-muted);
+  font-size: 12px;
+}
+
+.profile-page .profile-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 26px;
+}
+
+.profile-page .profile-shortcuts a {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  min-height: 105px;
+  padding: 13px 3px;
+  border-radius: var(--ui-radius);
+  color: var(--ui-ink);
+  background: var(--ui-card, #fff);
+  box-shadow: var(--ui-card-shadow, 0 6px 18px rgba(36, 68, 123, .08));
+  text-decoration: none;
+}
+
+.profile-page .profile-shortcuts strong {
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.profile-page .shortcut-icon {
+  color: var(--ui-blue);
+}
+
+.profile-page .shortcut-icon svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.profile-page .profile-section-heading,
+.my-posts-page .profile-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.profile-page .profile-section-heading h1,
+.profile-page .profile-section-heading h2,
+.my-posts-page .profile-section-heading h1 {
+  margin: 0;
+  color: var(--ui-ink);
+  font-size: 22px;
+}
+
+.profile-page .profile-section-heading a,
+.my-posts-page .profile-section-heading a {
+  color: var(--ui-blue);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.profile-page .profile-list,
+.my-posts-page .profile-list {
+  display: grid;
+  gap: 12px;
+}
+
+.profile-page .post-card,
+.my-posts-page .post-card {
+  display: flex;
+  gap: 13px;
+  min-height: 118px;
+  padding: 14px;
+  border-radius: var(--ui-radius);
+  background: var(--ui-card, #fff);
+  box-shadow: var(--ui-card-shadow, 0 6px 18px rgba(36, 68, 123, .08));
+}
+
+.profile-page .post-icon,
+.my-posts-page .post-icon {
+  display: grid;
+  flex: 0 0 64px;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: calc(var(--ui-radius) - 4px);
+  color: var(--ui-blue);
+  background: var(--ui-blue-soft);
+}
+
+.profile-page .post-icon svg,
+.my-posts-page .post-icon svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.profile-page .post-copy,
+.my-posts-page .post-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-page .post-meta,
+.my-posts-page .post-meta {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 5px;
+  color: var(--ui-blue);
+  font-size: 11px;
+}
+
+.profile-page .post-meta strong,
+.my-posts-page .post-meta strong {
+  color: var(--ui-orange);
+  font-weight: 700;
+}
+
+.profile-page .post-copy h3,
+.my-posts-page .post-copy h3 {
+  overflow: hidden;
+  margin: 0 0 6px;
+  color: var(--ui-ink);
+  font-size: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-page .post-copy p,
+.my-posts-page .post-copy p {
+  margin: 0 0 8px;
+  color: var(--ui-muted);
+  font-size: 12px;
+}
+
+.profile-page .post-action,
+.my-posts-page .post-action {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 9px;
+  color: var(--ui-blue);
+  background: var(--ui-blue-soft);
+  font-size: 11px;
+  text-decoration: none;
+}
+
+.profile-page .comment-card {
+  padding: 14px;
+  border-radius: var(--ui-radius);
+  background: var(--ui-card, #fff);
+  box-shadow: var(--ui-card-shadow, 0 6px 18px rgba(36, 68, 123, .08));
+}
+
+.profile-page .comment-card p {
+  margin: 7px 0 0;
+  color: var(--ui-muted);
+  font-size: 13px;
+}
+
+.profile-page .empty-state,
+.my-posts-page .empty-state {
+  padding: 32px 12px;
+  color: var(--ui-muted);
+  text-align: center;
+}
+
+.status-page .page-back,
+.my-posts-page .page-back {
+  display: inline-block;
+  margin-bottom: 14px;
+  color: var(--ui-muted);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.status-page h1 {
+  margin: 0 0 20px;
+  color: var(--ui-ink);
+  font-size: 25px;
+}
+
+.status-page .status-item {
+  margin-bottom: 22px;
+  padding: 18px;
+  border-radius: var(--ui-radius);
+  background: var(--ui-card, #fff);
+  box-shadow: var(--ui-card-shadow, 0 6px 18px rgba(36, 68, 123, .08));
+}
+
+.status-page .status-item h2,
+.status-page .status-item p {
+  margin: 0 0 8px;
+}
+
+.status-page .status-item p {
+  color: var(--ui-muted);
+  font-size: 13px;
+}
+
+.status-page .status-item > span {
+  color: var(--ui-orange);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.status-page fieldset {
+  display: grid;
+  gap: 9px;
+  margin: 0 0 18px;
+  padding: 0;
+  border: 0;
+}
+
+.status-page legend {
+  margin-bottom: 5px;
+  color: var(--ui-ink);
+  font-weight: 700;
+}
+
+.status-page label {
+  padding: 14px;
+  border: 1px solid var(--ui-blue);
+  border-radius: var(--ui-radius);
+  color: var(--ui-blue);
+  background: var(--ui-blue-soft);
+}
+
+.status-page input {
+  margin-right: 8px;
+  accent-color: var(--ui-blue);
+}
+
+.status-page .form-message {
+  min-height: 20px;
+  color: var(--ui-orange);
+  font-size: 13px;
+}
