@@ -36,8 +36,16 @@
 
   function renderLocations() {
     var select = document.getElementById("publish-location");
-    if (!select || !window.CampusData || typeof CampusData.getLocations !== "function") return;
-    CampusData.getLocations().forEach(function (location) {
+    if (!select || !window.CampusData) return;
+    var getLocations = typeof CampusData.getCampusLocations === "function"
+      ? CampusData.getCampusLocations
+      : CampusData.getLocations;
+    if (typeof getLocations !== "function") return;
+    var locations = getLocations() || [];
+    if (!locations.some(function (location) {
+      return (typeof location === "string" ? location : location.value) === "其他";
+    })) locations.push("其他");
+    locations.forEach(function (location) {
       var value = typeof location === "string" ? location : location.value;
       var label = typeof location === "string" ? location : location.label;
       if (!value) return;

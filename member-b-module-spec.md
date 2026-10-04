@@ -114,7 +114,7 @@ CampusData.updateStatus(id, "completed")
 CampusData.getMyItems("current-user")
 CampusData.getTypeLabel(type)
 CampusData.getStatusLabel(item)
-CampusData.getLocations()
+CampusData.getCampusLocations()
 ```
 
 “我的”页面还需要：
@@ -135,7 +135,7 @@ CampusData.addComment(itemId, text, "current-user")
 - `getMyItems(userId)` 按 `publisherId` 筛选。
 - `getTypeLabel()` 将 `lost` 转为“寻物”，将 `found` 转为“招领”。
 - `getStatusLabel(item)` 根据 `type` 和 `status` 返回中文显示文字。
-- `getLocations()` 返回校园地图中约定的地点。
+- `getCampusLocations()` 返回校园地图中约定的地点。
 - 收藏和评论也必须由 `CampusData` 统一读写，不能新建其他 key。
 
 ## 6. 统一物品数据结构
@@ -227,8 +227,8 @@ location.href = `./status.html?id=${item.id}`;
 每个页面只能有一层手机画布：
 
 ```html
-<link rel="stylesheet" href="../css/design-system.css">
 <link rel="stylesheet" href="../css/common.css">
+<link rel="stylesheet" href="../css/design-system.css">
 <link rel="stylesheet" href="../css/publish.css">
 
 <body>
@@ -238,7 +238,7 @@ location.href = `./status.html?id=${item.id}`;
 </body>
 ```
 
-`profile.html`、`my-posts.html` 和 `status.html` 使用 `profile.css`。CSS 顺序统一为：设计变量、公共样式、页面专属样式。
+`profile.html`、`my-posts.html` 和 `status.html` 使用 `profile.css`。CSS 顺序统一为：公共样式、设计变量、页面专属样式。
 
 手机画布统一按 `390 × 844` 设计，在桌面 Chrome 中居中显示。必须使用现有变量：
 
@@ -277,7 +277,7 @@ var(--ui-card-shadow)
 - 物品名称、分类、物品图片、特征描述、时间、地点、联系方式。
 - 图片最多选择 3 张；不能把 File 对象直接持久化。
 - 时间不能选择今天之后的日期。
-- 地点只能从 `CampusData.getLocations()` 选择。
+- 地点只能从 `CampusData.getCampusLocations()` 选择，并提供“其他”作为兜底选项。
 - 表单不完整时停留当前页并显示提示。
 - 成功后调用 `CampusData.createItem(formData)`。
 - 底部固定蓝底白字“发布信息”按钮。
