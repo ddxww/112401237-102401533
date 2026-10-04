@@ -18,10 +18,15 @@
   }
 
   function today() {
-    var now = new Date();
-    var month = String(now.getMonth() + 1).padStart(2, "0");
-    var day = String(now.getDate()).padStart(2, "0");
-    return now.getFullYear() + "-" + month + "-" + day;
+    var parts = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "Asia/Shanghai",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }).formatToParts(new Date());
+    var values = {};
+    parts.forEach(function (part) { values[part.type] = part.value; });
+    return values.year + "-" + values.month + "-" + values.day;
   }
 
   function showError(name, message) {
