@@ -68,17 +68,23 @@
 
   if (keyword.value.trim()) saveSearchTerm(keyword.value);
 
+  const locationGroups = {
+    图书馆: ["图书馆"],
+    晋江楼: ["晋江楼"],
+    教学区: ["中楼", "东一", "东二", "东三", "西一", "西二", "西三", "文一", "文二", "文三"],
+    学院楼: ["机械学院", "机电学院", "电气学院", "车辆工程", "化学学院", "材料学院", "生工学院", "环安学院", "土木学院", "建筑学院"],
+    餐厅: ["京元", "芙蓉园", "玫瑰园", "紫荆园", "牡丹园", "丁香园", "紫竹园", "茉莉园", "丹桂园", "百合园", "教工餐厅"],
+    服务与公共设施: ["快递中心", "校医院", "福友阁", "青春广场", "素拓中心", "学生活动中心", "山北行政楼", "山南行政楼"],
+    体育场馆: ["第一田径场", "第二田径场", "风雨操场"],
+    宿舍区: ["一区学生公寓", "二区学生公寓", "三区学生公寓", "四区学生公寓", "五区学生公寓"]
+  };
+
   function locationMatches(item, value) {
     if (value === "all") return true;
-    const location = item.location || "";
-    const map = {
-      教学区: /教学楼|博学楼|教室|图书馆/,
-      生活区: /宿舍|生活区|餐厅/,
-      操场: /操场|田径场|体育场/,
-      食堂: /食堂|餐厅/,
-      学院楼: /学院|教学楼|教室/,
-    };
-    return map[value] ? map[value].test(location) : !Object.values(map).some(pattern => pattern.test(location));
+    const location = String(item.location || "");
+    const matchesGroup = group => group.some(place => location.includes(place));
+    if (value === "其他") return !Object.values(locationGroups).some(matchesGroup);
+    return locationGroups[value] ? matchesGroup(locationGroups[value]) : false;
   }
 
   function timeMatches(item, value) {

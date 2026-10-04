@@ -22,6 +22,7 @@
   document.title = `${item.name} | 拾光`;
   const statusClass = item.status === "completed" ? "completed" : "active";
   const categoryLabel = item.category === "证件" ? "证件卡类 · 校园一卡通" : `${item.category} · 校园物品`;
+  const contactText = item.contact || "暂无联系方式";
   container.innerHTML = `
     <div class="detail-visual ${item.imageClass}">
       <span class="item-emoji" aria-hidden="true">${CampusCard.iconSvg(item.icon)}</span>
@@ -37,7 +38,8 @@
       </div>
       <p class="detail-subtitle">${categoryLabel}</p>
       <section class="detail-description">
-        <strong>特征描述</strong>
+        <strong>简要描述</strong>
+        ${item.locationDetail ? `<small class="detail-location-detail">具体位置：${item.locationDetail}</small>` : ""}
         <span>${item.description}</span>
       </section>
       <section class="detail-info">
@@ -46,7 +48,7 @@
       </section>
       <section class="publisher-card">
         <span class="publisher-avatar">${item.publisher.slice(0, 1)}</span>
-        <div><strong>${item.publisher}</strong><p>手机 ${item.contact.replace(/^[^：:]+[：:]/, "")}</p></div>
+        <div class="publisher-info"><strong>${item.publisher}</strong><p class="publisher-contact"><span id="contact-value">${contactText}</span><button class="copy-contact" id="copy-contact" type="button" aria-label="复制联系方式"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>复制</span></button></p></div>
         <time>12分钟前</time>
       </section>
     </article>`;
@@ -56,5 +58,28 @@
     notify(event.currentTarget.classList.contains("saved") ? "已加入收藏" : "已取消收藏");
   });
   document.getElementById("share-detail").addEventListener("click", () => notify("分享卡片已生成"));
-  document.getElementById("contact-publisher").addEventListener("click", () => notify("联系请求已发送"));
+
+  async function copyContact() {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(contactText);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = contactText;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        const copied = document.execCommand("copy");
+        textarea.remove();
+        if (!copied) throw new Error("copy command failed");
+      }
+      notify("复制成功，快去联系ta吧");
+    } catch (error) {
+      notify("复制失败，请手动复制联系方式");
+    }
+  }
+
+  document.getElementById("copy-contact").addEventListener("click", copyContact);
 })();

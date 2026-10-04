@@ -3,69 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>发布信息 - 校园失物招领</title>
+  <title>发布信息 | 拾光</title>
   <link rel="stylesheet" href="../css/common.css">
   <link rel="stylesheet" href="../css/design-system.css">
   <link rel="stylesheet" href="../css/publish.css">
 </head>
 <body>
   <div class="phone-screen publish-screen">
-    <main class="publish-page" aria-labelledby="publish-title">
-      <a class="page-back" href="../index.html">返回首页</a>
-      <h1 id="publish-title">发布信息</h1>
+    <header class="publish-topbar">
+      <a class="publish-back" href="../index.html" aria-label="返回首页"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/><path d="M9 12h11"/></svg></a>
+      <h1>发布信息</h1>
+    </header>
+
+    <main class="publish-page">
       <form id="publish-form" novalidate>
         <fieldset class="type-switch">
-          <legend class="sr-only">信息类型</legend>
-          <label><input type="radio" name="type" value="lost" checked><span class="icon-wrap" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m10.5 14.5 7-7a3 3 0 1 1 4 4l-7 7a3 3 0 0 1-4-4Z"/><path d="m13 11-2-2M8 16l-2 2M5 13l-2 2"/></svg></span><span>寻物</span></label>
-          <label><input type="radio" name="type" value="found"><span class="icon-wrap" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M5.5 5.5l13 13M18.5 5.5l-13 13"/></svg></span><span>招领</span></label>
+          <legend>信息类型</legend>
+          <label><input type="radio" name="type" value="lost" checked><span>寻物</span></label>
+          <label><input type="radio" name="type" value="found"><span>招领</span></label>
         </fieldset>
+
+        <label class="form-field">
+          <span>物品名称 <b>*</b></span>
+          <input name="name" maxlength="40" required placeholder="例如：校园卡、蓝色水杯">
+          <small data-error="name"></small>
+        </label>
+
         <div class="field-grid">
-          <label class="form-field"><span>物品名称 <b>*</b></span><input name="title" maxlength="40" required placeholder="请输入物品名称"><small data-error="title"></small></label>
-          <label class="form-field"><span>分类 <b>*</b></span><select name="category" required><option value="">请选择</option><option>证件</option><option>数码</option><option>钥匙</option><option>生活用品</option><option>书籍</option><option>其他</option></select><small data-error="category"></small></label>
+          <label class="form-field">
+            <span>分类 <b>*</b></span>
+            <select name="category" required>
+              <option value="">请选择分类</option>
+              <option>证件</option>
+              <option>电子产品</option>
+              <option>日用品</option>
+              <option>书籍文具</option>
+              <option>钥匙</option>
+              <option>其他</option>
+            </select>
+            <small data-error="category"></small>
+          </label>
+          <label class="form-field">
+            <span>时间 <b>*</b></span>
+            <input id="publish-date" name="date" type="date" required>
+            <small data-error="date"></small>
+          </label>
         </div>
-        <label class="form-field"><span>物品图片</span><span class="upload-box"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM7 16l3-3 2 2 3-4 3 5M8 8h.01"/></svg><span>添加清晰图片，最多 3 张</span><input name="image" type="file" accept="image/*" multiple></span></label>
-        <label class="form-field"><span>特征描述 <b>*</b></span><textarea name="description" maxlength="240" required placeholder="描述颜色、品牌、明显特征等，帮助快速识别"></textarea><small data-error="description"></small></label>
+
         <div class="field-grid">
-          <label class="form-field"><span>时间 <b>*</b></span><input id="publish-date" name="date" type="date" required><small data-error="date"></small></label>
-          <div class="form-field location-field">
+          <label class="form-field">
             <span>地点 <b>*</b></span>
-            <div class="location-picker" data-location-picker>
-              <input id="publish-location" name="location" type="hidden">
-              <button class="location-trigger" type="button" aria-expanded="false" aria-controls="publish-location-menu">
-                <span data-location-label>填写校内地点</span>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-              </button>
-              <div class="location-menu" id="publish-location-menu" data-location-menu hidden>
-                <div class="location-groups" data-location-groups></div>
-                <div class="location-custom">
-                  <label for="publish-custom-location">自定义地点</label>
-                  <div class="location-custom-row">
-                    <input id="publish-custom-location" type="text" maxlength="40" placeholder="输入校内地点">
-                    <button type="button" data-location-custom-confirm>确定</button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <select id="publish-location" name="location" required>
+              <option value="">请选择地点</option>
+            </select>
             <small data-error="location"></small>
-            <label class="location-detail-field" for="publish-location-detail">
-              <span>具体位置 <b>*</b></span>
-              <input id="publish-location-detail" class="location-detail-input" name="locationDetail" maxlength="60" required placeholder="例如：二楼自习区、靠窗座位">
-              <small data-error="locationDetail"></small>
-            </label>
-          </div>
+          </label>
+          <label class="form-field">
+            <span>具体位置</span>
+            <input name="locationDetail" maxlength="30" placeholder="例如：二楼、301">
+          </label>
         </div>
-        <label class="form-field"><span>联系方式 <b>*</b></span><input name="contact" maxlength="80" required placeholder="手机号 / 微信号（仅对联系者显示）"><small data-error="contact"></small></label>
-        <p id="publish-form-message" class="form-message" role="alert"></p>
+
+        <label class="form-field">
+          <span>简要描述 <b>*</b></span>
+          <textarea name="description" maxlength="240" required placeholder="描述颜色、品牌、明显特征等"></textarea>
+          <small data-error="description"></small>
+        </label>
+
+        <label class="form-field">
+          <span>联系方式 <b>*</b></span>
+          <input name="contact" maxlength="80" required placeholder="手机号 / 微信号 / QQ号">
+          <small data-error="contact"></small>
+        </label>
+
+        <p class="form-message" id="publish-form-message" role="alert"></p>
         <button class="primary-button" type="submit">发布信息</button>
       </form>
     </main>
+
     <nav class="app-bottom-nav" aria-label="底部导航">
       <a class="bottom-nav-link" href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10M9 20v-6h6v6"/></svg>首页</a>
-      <a class="bottom-nav-link publish-nav active" href="./publish.html" aria-current="page"><span class="nav-plus" aria-hidden="true">＋</span>发布</a>
+      <a class="bottom-nav-link active" href="./publish.html"><span class="nav-plus" aria-hidden="true">＋</span>发布</a>
       <a class="bottom-nav-link" href="./profile.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>我的</a>
     </nav>
   </div>
-  <script src="../js/data.js"></script>
+
+  <script src="../js/data.js?v=4"></script>
   <script src="../js/publish.js"></script>
 </body>
 </html>
