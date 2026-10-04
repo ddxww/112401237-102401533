@@ -167,6 +167,16 @@
   background: var(--ui-blue-soft);
 }
 
+.profile-page .post-detail-link,
+.my-posts-page .post-detail-link {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  gap: 13px;
+  color: inherit;
+  text-decoration: none;
+}
+
 .profile-page .post-icon svg,
 .my-posts-page .post-icon svg {
   width: 30px;
