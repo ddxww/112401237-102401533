@@ -94,6 +94,10 @@
   min-width: 0;
 }
 
+.publish-page [hidden] {
+  display: none !important;
+}
+
 .publish-page .location-picker {
   position: relative;
 }
