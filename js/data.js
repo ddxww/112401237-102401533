@@ -3,11 +3,12 @@
   const ITEMS_STORAGE_KEY = "campus-lost-found-items";
   const VIEWED_ITEMS_STORAGE_KEY = "campus-lost-found-viewed-items";
   const campusLocations = [
-    "图书馆", "图书馆二楼", "中楼", "中楼 301", "东一", "东二", "东三",
-    "西一", "西二", "西三", "文科楼", "理科楼", "京元餐厅", "丁香园",
-    "一区学生街", "第一田径场", "第二田径场", "游泳场", "风雨操场",
-    "素拓中心", "行政楼", "校医院", "玫瑰园", "紫荆园", "福友阁",
-    "北门", "东门", "南门", "快递中心", "宿舍区"
+    "图书馆", "晋江楼", "中楼", "东一", "东二", "东三", "西一", "西二", "西三", "文一", "文二", "文三",
+    "机械学院", "机电学院", "电气学院", "车辆工程", "化学学院", "材料学院", "生工学院", "环安学院", "土木学院", "建筑学院",
+    "京元", "芙蓉园", "玫瑰园", "紫荆园", "牡丹园", "丁香园", "紫竹园", "茉莉园", "丹桂园", "百合园", "教工餐厅",
+    "快递中心", "校医院", "福友阁", "青春广场", "素拓中心", "学生活动中心", "山北行政楼", "山南行政楼",
+    "第一田径场", "第二田径场", "风雨操场",
+    "一区学生公寓", "二区学生公寓", "三区学生公寓", "四区学生公寓", "五区学生公寓", "其他"
   ];
   const seedItems = [
     { id: "lost-card-001", type: "lost", name: "校园卡", category: "证件", location: "图书馆二楼", date: "今天 10:24", description: "蓝色卡套，卡套背面有一枚小树贴纸。最后一次使用是在图书馆二楼自习区。", contact: "QQ：24681357", imageClass: "icon-blue", icon: "card", status: "active", publisher: "林同学", views: 128, createdAt: "2026-10-04T10:24:00" },
@@ -51,12 +52,27 @@
     }
   }
 
+  function normalizeLocation(location) {
+    const raw = String(location || "").trim().replaceAll("京灵餐厅", "京元");
+    const aliases = {
+      "图书馆二楼": { name: "图书馆", detail: "二楼" },
+      "中楼 301": { name: "中楼", detail: "301" },
+      "中楼301": { name: "中楼", detail: "301" },
+      "京元餐厅": { name: "京元", detail: "" },
+      "东二教学楼": { name: "东二", detail: "" }
+    };
+    if (aliases[raw]) return aliases[raw];
+    if (campusLocations.includes(raw)) return { name: raw, detail: "" };
+    return { name: raw || "其他", detail: "" };
+  }
+
   function normalizeItem(item) {
-    if (item.location !== "京灵餐厅") return item;
+    const normalized = normalizeLocation(item.location);
     return {
       ...item,
-      location: "京元餐厅",
-      description: (item.description || "").replaceAll("京灵餐厅", "京元餐厅")
+      location: normalized.name,
+      locationDetail: item.locationDetail || normalized.detail,
+      description: (item.description || "").replaceAll("京灵餐厅", "京元")
     };
   }
 
@@ -87,6 +103,34 @@
 
   function getCampusLocations() { return campusLocations.slice(); }
 
+  function createItem(input) {
+    const values = input || {};
+    const name = String(values.name || values.title || "").trim();
+    if (!name) return null;
+
+    const normalized = normalizeLocation(values.location);
+    const item = {
+      id: values.id || `item-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      type: values.type === "found" ? "found" : "lost",
+      name,
+      category: String(values.category || "其他").trim(),
+      location: normalized.name,
+      locationDetail: String(values.locationDetail || normalized.detail || "").trim(),
+      date: String(values.dateLabel || values.date || "刚刚").trim(),
+      description: String(values.description || "").trim(),
+      contact: String(values.contact || "").trim(),
+      imageClass: values.imageClass || "icon-blue",
+      icon: values.icon || "card",
+      status: "active",
+      publisher: String(values.publisher || "校园用户").trim(),
+      views: 0,
+      createdAt: values.createdAt || new Date().toISOString()
+    };
+
+    writeItems([item, ...readItems()]);
+    return item;
+  }
+
   function recordView(id) {
     const itemId = String(id || "");
     if (!itemId) return null;
@@ -109,5 +153,14 @@
     return { ...updatedItems.find(entry => entry.id === itemId), added: true };
   }
 
-  window.CampusData = { readItems, getItemById, getTypeLabel, getStatusLabel, getCampusLocations, recordView };
+  window.CampusData = {
+    readItems,
+    getItemById,
+    getTypeLabel,
+    getStatusLabel,
+    getCampusLocations,
+    getLocations: getCampusLocations,
+    createItem,
+    recordView
+  };
 })();
