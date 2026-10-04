@@ -25,7 +25,7 @@
         </div>
         <label class="form-field"><span>物品图片</span><span class="upload-box"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM7 16l3-3 2 2 3-4 3 5M8 8h.01"/></svg><span>添加清晰图片，最多 3 张</span><input name="image" type="file" accept="image/*" multiple></span></label>
         <label class="form-field"><span>特征描述 <b>*</b></span><textarea name="description" maxlength="240" required placeholder="描述颜色、品牌、明显特征等，帮助快速识别"></textarea><small data-error="description"></small></label>
-        <div class="field-grid">
+        <div class="field-grid location-time-grid">
           <label class="form-field"><span>时间 <b>*</b></span><input id="publish-date" name="date" type="date" required><small data-error="date"></small></label>
           <div class="form-field location-field">
             <span>地点 <b>*</b></span>
@@ -47,12 +47,12 @@
               </div>
             </div>
             <small data-error="location"></small>
-            <label class="location-detail-field" for="publish-location-detail">
-              <span>具体位置 <b>*</b></span>
-              <input id="publish-location-detail" class="location-detail-input" name="locationDetail" maxlength="60" required placeholder="例如：二楼自习区、靠窗座位">
-              <small data-error="locationDetail"></small>
-            </label>
           </div>
+          <label class="location-detail-field" for="publish-location-detail">
+            <span>具体位置 <b>*</b></span>
+            <input id="publish-location-detail" class="location-detail-input" name="locationDetail" maxlength="60" required placeholder="例如：二楼自习区、靠窗座位">
+            <small data-error="locationDetail"></small>
+          </label>
         </div>
         <label class="form-field"><span>联系方式 <b>*</b></span><input name="contact" maxlength="80" required placeholder="手机号 / 微信号（仅对联系者显示）"><small data-error="contact"></small></label>
         <p id="publish-form-message" class="form-message" role="alert"></p>
