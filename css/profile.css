@@ -229,11 +229,14 @@
 .profile-page .post-action,
 .my-posts-page .post-action {
   display: inline-block;
-  padding: 6px 10px;
+  align-self: flex-start;
+  padding: 5px 8px;
   border-radius: 9px;
   color: var(--ui-blue);
   background: var(--ui-blue-soft);
   font-size: 11px;
+  line-height: 1.2;
+  white-space: nowrap;
   text-decoration: none;
 }
 

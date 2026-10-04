@@ -8,7 +8,12 @@
   }
 
   function getItems() {
-    return window.CampusData && typeof CampusData.getMyItems === "function" ? CampusData.getMyItems(USER_ID) : [];
+    if (!window.CampusData) return [];
+    if (typeof CampusData.getMyItems === "function") return CampusData.getMyItems(USER_ID) || [];
+    if (typeof CampusData.readItems !== "function") return [];
+    return CampusData.readItems().filter(function (item) {
+      return item && item.publisher === "校园用户";
+    });
   }
 
   function resolveItems(values) {
