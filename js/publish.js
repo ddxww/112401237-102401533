@@ -2,6 +2,16 @@
   "use strict";
 
   var USER_ID = "current-user";
+  var LOCATION_GROUPS = [
+    { label: "图书馆", items: [] },
+    { label: "晋江楼", items: [] },
+    { label: "教学区", items: ["中楼", "东一", "东二", "东三", "西一", "西二", "西三", "文一", "文二", "文三"] },
+    { label: "学院楼", items: ["机械学院", "机电学院", "电气学院", "车辆工程", "化学学院", "材料学院", "生工学院", "环安学院", "土木学院", "建筑学院"] },
+    { label: "餐厅", items: ["京元", "芙蓉园", "玫瑰园", "紫荆园", "牡丹园", "丁香园", "紫竹园", "茉莉园", "丹桂园", "百合园", "教工餐厅"] },
+    { label: "服务与公共设施", items: ["快递中心", "校医院", "福友阁", "青春广场", "素拓中心", "学生活动中心", "山北行政楼", "山南行政楼"] },
+    { label: "体育场馆", items: ["第一田径场", "第二田径场", "风雨操场"] },
+    { label: "宿舍区", items: ["一区学生公寓", "二区学生公寓", "三区学生公寓", "四区学生公寓", "五区学生公寓"] }
+  ];
 
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;");
@@ -35,24 +45,100 @@
   }
 
   function renderLocations() {
-    var select = document.getElementById("publish-location");
-    if (!select || !window.CampusData) return;
-    var getLocations = typeof CampusData.getCampusLocations === "function"
-      ? CampusData.getCampusLocations
-      : CampusData.getLocations;
-    if (typeof getLocations !== "function") return;
-    var locations = getLocations() || [];
-    if (!locations.some(function (location) {
-      return (typeof location === "string" ? location : location.value) === "其他";
-    })) locations.push("其他");
-    locations.forEach(function (location) {
-      var value = typeof location === "string" ? location : location.value;
-      var label = typeof location === "string" ? location : location.label;
-      if (!value) return;
-      var option = document.createElement("option");
-      option.value = value;
-      option.textContent = label || value;
-      select.appendChild(option);
+    var picker = document.querySelector("[data-location-picker]");
+    if (!picker) return;
+    var hiddenInput = document.getElementById("publish-location");
+    var trigger = picker.querySelector(".location-trigger");
+    var label = picker.querySelector("[data-location-label]");
+    var menu = picker.querySelector("[data-location-menu]");
+    var groupsContainer = picker.querySelector("[data-location-groups]");
+    var customInput = picker.querySelector("#publish-custom-location");
+    var customConfirm = picker.querySelector("[data-location-custom-confirm]");
+    if (!hiddenInput || !trigger || !label || !menu || !groupsContainer) return;
+
+    function closeMenu() {
+      menu.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+    }
+
+    function chooseLocation(value) {
+      var normalized = String(value || "").trim();
+      if (!normalized) return;
+      hiddenInput.value = normalized;
+      label.textContent = normalized;
+      trigger.classList.add("has-value");
+      showError("location", "");
+      closeMenu();
+    }
+
+    function createOption(text, className) {
+      var option = document.createElement("button");
+      option.type = "button";
+      option.className = className || "location-option";
+      option.textContent = text;
+      option.addEventListener("click", function () { chooseLocation(text); });
+      return option;
+    }
+
+    LOCATION_GROUPS.forEach(function (group) {
+      if (!group.items.length) {
+        groupsContainer.appendChild(createOption(group.label, "location-option location-level-one"));
+        return;
+      }
+      var groupElement = document.createElement("div");
+      groupElement.className = "location-group";
+      var groupToggle = document.createElement("button");
+      groupToggle.type = "button";
+      groupToggle.className = "location-group-toggle";
+      groupToggle.setAttribute("aria-expanded", "false");
+      groupToggle.innerHTML = "<span>" + escapeHtml(group.label) + "</span><svg class=\"location-group-arrow\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m9 6 6 6-6 6\"/></svg>";
+      var options = document.createElement("div");
+      options.className = "location-group-options";
+      options.hidden = true;
+      group.items.forEach(function (item) { options.appendChild(createOption(item)); });
+      groupToggle.addEventListener("click", function () {
+        var expanded = groupToggle.getAttribute("aria-expanded") === "true";
+        groupToggle.setAttribute("aria-expanded", String(!expanded));
+        options.hidden = expanded;
+      });
+      groupElement.appendChild(groupToggle);
+      groupElement.appendChild(options);
+      groupsContainer.appendChild(groupElement);
+    });
+
+    var customBlock = document.createElement("button");
+    customBlock.type = "button";
+    customBlock.className = "location-option location-custom-entry";
+    customBlock.textContent = "其他 / 自定义地点";
+    customBlock.addEventListener("click", function () {
+      if (customInput) {
+        customInput.focus();
+        customInput.scrollIntoView({ block: "nearest" });
+      }
+    });
+    groupsContainer.appendChild(customBlock);
+
+    trigger.addEventListener("click", function () {
+      var isOpen = !menu.hidden;
+      menu.hidden = isOpen;
+      trigger.setAttribute("aria-expanded", String(!isOpen));
+    });
+    if (customConfirm && customInput) {
+      customConfirm.addEventListener("click", function () {
+        var value = customInput.value.trim();
+        if (!value) {
+          showError("location", "请输入自定义地点");
+          customInput.focus();
+          return;
+        }
+        chooseLocation(value);
+      });
+    }
+    document.addEventListener("click", function (event) {
+      if (!picker.contains(event.target)) closeMenu();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") closeMenu();
     });
   }
 

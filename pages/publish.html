@@ -27,7 +27,27 @@
         <label class="form-field"><span>特征描述 <b>*</b></span><textarea name="description" maxlength="240" required placeholder="描述颜色、品牌、明显特征等，帮助快速识别"></textarea><small data-error="description"></small></label>
         <div class="field-grid">
           <label class="form-field"><span>时间 <b>*</b></span><input id="publish-date" name="date" type="date" required><small data-error="date"></small></label>
-          <label class="form-field"><span>地点 <b>*</b></span><select id="publish-location" name="location" required><option value="">填写校内地点</option></select><small data-error="location"></small></label>
+          <div class="form-field location-field">
+            <span>地点 <b>*</b></span>
+            <div class="location-picker" data-location-picker>
+              <input id="publish-location" name="location" type="hidden">
+              <button class="location-trigger" type="button" aria-expanded="false" aria-controls="publish-location-menu">
+                <span data-location-label>填写校内地点</span>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+              </button>
+              <div class="location-menu" id="publish-location-menu" data-location-menu hidden>
+                <div class="location-groups" data-location-groups></div>
+                <div class="location-custom">
+                  <label for="publish-custom-location">自定义地点</label>
+                  <div class="location-custom-row">
+                    <input id="publish-custom-location" type="text" maxlength="40" placeholder="输入校内地点">
+                    <button type="button" data-location-custom-confirm>确定</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <small data-error="location"></small>
+          </div>
         </div>
         <label class="form-field"><span>联系方式 <b>*</b></span><input name="contact" maxlength="80" required placeholder="手机号 / 微信号（仅对联系者显示）"><small data-error="contact"></small></label>
         <p id="publish-form-message" class="form-message" role="alert"></p>
