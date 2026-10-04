@@ -102,6 +102,32 @@
   position: relative;
 }
 
+.publish-page .location-detail-field {
+  display: grid;
+  gap: 7px;
+  margin-top: 10px;
+  color: var(--ui-ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.publish-page .location-detail-field b {
+  color: var(--ui-orange);
+}
+
+.publish-page .location-detail-input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--ui-border, #dce2ec);
+  border-radius: var(--ui-radius);
+  color: var(--ui-text);
+  background: var(--ui-card, #fff);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 400;
+}
+
 .publish-page .location-trigger {
   display: flex;
   align-items: center;
