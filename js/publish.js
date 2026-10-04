@@ -18,7 +18,10 @@
   }
 
   function today() {
-    return new Date().toISOString().slice(0, 10);
+    var now = new Date();
+    var month = String(now.getMonth() + 1).padStart(2, "0");
+    var day = String(now.getDate()).padStart(2, "0");
+    return now.getFullYear() + "-" + month + "-" + day;
   }
 
   function showError(name, message) {
