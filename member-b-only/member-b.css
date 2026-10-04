@@ -1,0 +1,23 @@
+.member-b-publish,
+.member-b-success,
+.member-b-mine { max-width: 480px; margin: 0 auto; padding: 24px 20px; color: #1d2b49; font-family: "Microsoft YaHei", sans-serif; }
+.member-b-publish form { display: grid; gap: 14px; }
+.member-b-publish label { display: grid; gap: 7px; font-weight: 700; }
+.member-b-publish input, .member-b-publish select, .member-b-publish textarea { width: 100%; padding: 13px; border: 1px solid #dbe2ed; border-radius: 12px; font: inherit; font-weight: 400; }
+.member-b-publish textarea { min-height: 100px; resize: vertical; }
+.member-b-type-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.member-b-type-switch label { display: block; padding: 12px; border-radius: 10px; text-align: center; background: #eef2ff; }
+.member-b-type-switch input { width: auto; }
+.member-b-publish button, .member-b-success button { min-height: 48px; border: 0; border-radius: 12px; color: #fff; background: #405bd8; font: inherit; font-weight: 700; }
+.member-b-success { display: grid; justify-items: center; gap: 16px; text-align: center; }
+.member-b-success .success-mark { display: grid; place-items: center; width: 84px; height: 84px; border-radius: 50%; color: #fff; background: #47a574; font-size: 40px; }
+.success-summary { display: grid; grid-template-columns: repeat(3, 1fr); width: 100%; gap: 10px; padding: 18px; border-radius: 18px; background: #f7f8fa; }
+.success-summary span { display: grid; gap: 8px; color: #8b95a8; font-size: 12px; }
+.success-summary strong { color: #1d2b49; font-size: 15px; }
+.member-b-mine h2 { margin-bottom: 18px; }
+.member-b-post-list { display: grid; gap: 14px; }
+.member-b-post { padding: 16px; border-radius: 16px; background: #fff; box-shadow: 0 6px 18px rgba(36, 68, 123, .08); }
+.member-b-post h3, .member-b-post p { margin: 0 0 8px; }
+.member-b-post p { color: #7a879d; font-size: 13px; }
+.member-b-post span { display: inline-block; margin-bottom: 12px; color: #df8b1e; font-size: 13px; font-weight: 700; }
+.member-b-post button { margin-right: 8px; padding: 8px 10px; border: 0; border-radius: 9px; color: #2f6fed; background: #edf2ff; font: inherit; font-size: 12px; }
