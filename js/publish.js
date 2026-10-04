@@ -40,6 +40,7 @@
     if (!String(data.get("date") || "")) errors.date = "请选择时间";
     else if (String(data.get("date")) > today()) errors.date = "日期不能晚于今天";
     if (!String(data.get("location") || "").trim()) errors.location = "请选择校内地点";
+    if (!String(data.get("locationDetail") || "").trim()) errors.locationDetail = "请填写具体位置";
     if (!String(data.get("contact") || "").trim()) errors.contact = "请填写联系方式";
     return errors;
   }
@@ -166,17 +167,22 @@
       document.getElementById("publish-form-message").textContent = "共享数据模块尚未加载";
       return;
     }
-    data.set("publisherId", USER_ID);
-    data.set("publisher", "林同学");
-    data.set("dateValue", data.get("date"));
-    data.set("date", formatDate(data.get("date")));
-    data.delete("image");
-    var item = CampusData.createItem(data);
+    var item = CampusData.createItem({
+      type: data.get("type"),
+      name: String(data.get("title") || "").trim(),
+      category: String(data.get("category") || "").trim(),
+      location: String(data.get("location") || "").trim(),
+      locationDetail: String(data.get("locationDetail") || "").trim(),
+      dateLabel: formatDate(data.get("date")),
+      description: String(data.get("description") || "").trim(),
+      contact: String(data.get("contact") || "").trim(),
+      publisher: "校园用户"
+    });
     if (!item || !item.id) {
       document.getElementById("publish-form-message").textContent = "发布失败，请稍后重试";
       return;
     }
-    window.location.href = "./publish-success.html?id=" + encodeURIComponent(item.id);
+    window.location.href = "../index.html";
   }
 
   function initPublishPage() {
