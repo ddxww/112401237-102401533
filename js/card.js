@@ -1,0 +1,40 @@
+(function () {
+  function iconSvg(type) {
+    const paths = {
+      card: '<rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M7 9h4M7 13h6M16 9h2"></path>',
+      umbrella: '<path d="M3 13a9 9 0 0 1 18 0H3Z"></path><path d="M12 13v6a2 2 0 0 0 4 0"></path>',
+      headphones: '<path d="M4 14v-2a8 8 0 0 1 16 0v2"></path><rect x="3" y="13" width="4" height="6" rx="1"></rect><rect x="17" y="13" width="4" height="6" rx="1"></rect>',
+      cup: '<path d="M5 7h12v8a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V7Z"></path><path d="M17 10h2a2 2 0 0 1 0 4h-2M8 4v3M12 4v3"></path>'
+    };
+    return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${paths[type] || paths.card}</svg>`;
+  }
+
+  function itemCard(item) {
+    const statusClass = item.status === "completed" ? "completed" : "active";
+    const detailPath = window.location.pathname.includes("/pages/") ? "./detail.html" : "./pages/detail.html";
+    return `
+      <article class="item-card">
+        <a class="item-card-link" href="${detailPath}?id=${encodeURIComponent(item.id)}">
+          <div class="item-thumb ${item.imageClass}">
+            <span class="item-type ${item.type}">${CampusData.getTypeLabel(item.type)}</span>
+            <span class="item-emoji" aria-hidden="true">${iconSvg(item.icon)}</span>
+          </div>
+          <div class="item-body">
+            <div class="item-card-head">
+              <h3>${item.name}</h3>
+              <span class="item-type-inline ${item.type}">${CampusData.getTypeLabel(item.type)}</span>
+            </div>
+            <div class="item-meta">
+              <span>${item.date}</span>
+              <span>${item.location}</span>
+            </div>
+            <div class="item-footer">
+              <span class="status-pill ${statusClass}">${CampusData.getStatusLabel(item)}</span>
+              <span class="view-count" aria-label="浏览次数">◉ ${item.views || 0}</span>
+            </div>
+          </div>
+        </a>
+      </article>`;
+  }
+  window.CampusCard = { itemCard, iconSvg };
+})();

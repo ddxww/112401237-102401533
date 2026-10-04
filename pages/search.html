@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>搜索结果 | 拾光</title>
+  <link rel="stylesheet" href="../css/common.css">
+  <link rel="stylesheet" href="../css/search.css">
+  <link rel="stylesheet" href="../css/design-system.css">
+</head>
+<body>
+  <div class="phone-screen search-screen">
+    <header class="site-header compact-header">
+      <div class="status-bar" aria-label="系统状态"><span>9:41</span><span class="status-icons"><i></i><i></i><i></i><svg viewBox="0 0 24 24"><path d="M4 10a11 11 0 0 1 16 0M7 13a7 7 0 0 1 10 0M10 16a3 3 0 0 1 4 0"/><circle cx="12" cy="19" r="1"/></svg><span class="battery"></span></span></div>
+      <div class="search-page-title">
+        <a class="back-button" href="../index.html" aria-label="返回首页"><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/><path d="M9 12h11"/></svg></a>
+        <h1>搜索结果</h1>
+      </div>
+    </header>
+
+    <main class="search-results-shell">
+      <form class="result-search-row" id="filter-form">
+        <label class="result-search-box" for="keyword">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+          <input id="keyword" name="keyword" type="search" placeholder="搜索物品名称">
+          <button class="clear-keyword hidden" id="clear-keyword" type="button" aria-label="清空关键词"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button>
+        </label>
+        <button class="search-submit" type="submit">搜索</button>
+      </form>
+
+      <section class="results-heading" id="results-heading">
+        <p id="results-summary">正在加载</p>
+        <button class="filter-trigger" id="open-filter" type="button">筛选</button>
+      </section>
+
+      <section class="item-grid result-grid" id="search-item-grid" aria-live="polite"></section>
+
+      <section class="no-results-state hidden" id="no-results-state" aria-live="polite">
+        <div class="no-results-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        </div>
+        <h2>没有找到相关信息</h2>
+        <p>试试更换关键词，或减少一些筛选条件。</p>
+      </section>
+
+      <section class="search-suggestion" id="search-suggestion">
+        <strong>没有找到你的物品？</strong>
+        <p>试试更换关键词，或发布一条寻物信息，让更多同学帮你留意。</p>
+      </section>
+    </main>
+
+    <div class="filter-overlay hidden" id="filter-overlay">
+      <div class="filter-scrim" id="filter-scrim"></div>
+      <aside class="filter-sheet" role="dialog" aria-modal="true" aria-labelledby="filter-title">
+        <div class="sheet-handle" aria-hidden="true"></div>
+        <div class="sheet-header">
+          <h2 id="filter-title">筛选条件</h2>
+          <button class="sheet-close" id="close-filter" type="button" aria-label="关闭筛选">×</button>
+        </div>
+
+        <div class="filter-content">
+        <fieldset class="chip-group" data-filter-group="sort">
+          <legend>排序方式</legend>
+          <div class="chip-options">
+            <button class="chip active" type="button" data-value="default">默认排序</button>
+            <button class="chip" type="button" data-value="newest">发布时间</button>
+            <button class="chip" type="button" data-value="views">浏览次数</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="chip-group" data-filter-group="time">
+          <legend>时间范围</legend>
+          <div class="chip-options">
+            <button class="chip active" type="button" data-value="all">不限</button>
+            <button class="chip" type="button" data-value="day">最近一天</button>
+            <button class="chip" type="button" data-value="week">最近一周</button>
+            <button class="chip" type="button" data-value="half-year">最近半年</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="chip-group" data-filter-group="location">
+          <legend>地点范围</legend>
+          <div class="chip-options">
+            <button class="chip active" type="button" data-value="all">全部</button>
+            <button class="chip" type="button" data-value="教学区">教学区</button>
+            <button class="chip" type="button" data-value="生活区">生活区</button>
+            <button class="chip" type="button" data-value="操场">操场</button>
+            <button class="chip" type="button" data-value="食堂">食堂</button>
+            <button class="chip" type="button" data-value="学院楼">学院楼</button>
+            <button class="chip" type="button" data-value="其他">其他</button>
+          </div>
+        </fieldset>
+        </div>
+
+        <div class="sheet-actions">
+          <button class="sheet-reset" id="reset-filters" type="button">重置</button>
+          <button class="sheet-confirm" id="confirm-filter" type="button">确定</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script src="../js/data.js?v=3"></script>
+  <script src="../js/card.js"></script>
+  <script src="../js/search.js?v=2"></script>
+</body>
+</html>
