@@ -3,6 +3,7 @@
   const empty = document.getElementById("home-empty");
   const count = document.getElementById("home-result-count");
   const segments = document.querySelectorAll("[data-home-filter]");
+  const heroSearchInput = document.querySelector(".hero-search input");
   let currentFilter = "all";
 
   function render() {
@@ -21,6 +22,11 @@
     });
     render();
   }));
+
+  // The home search field is an entry point to the dedicated search screen.
+  heroSearchInput?.addEventListener("click", () => {
+    window.location.href = "./pages/search.html";
+  });
 
   render();
 })();

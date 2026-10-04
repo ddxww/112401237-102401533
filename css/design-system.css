@@ -157,3 +157,24 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   body { border: 0; border-radius: 0; box-shadow: none; height: 100dvh; margin: 0; max-width: none; width: 100%; }
   .phone-screen { border-radius: 0; }
 }
+
+/* The app uses a plain web canvas; the phone frame and simulated status bar are removed. */
+html { background: #edf0f3; }
+body {
+  width: 390px;
+  max-width: calc(100vw - 32px);
+  height: min(844px, calc(100dvh - 32px));
+  min-height: 0;
+  margin: 16px auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--ui-white);
+}
+.phone-screen { border-radius: 0; }
+.status-bar { display: none !important; }
+
+@media (max-width: 540px) {
+  html { background: var(--ui-white); }
+  body { width: 100%; max-width: none; height: 100dvh; margin: 0; }
+}

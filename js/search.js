@@ -12,10 +12,61 @@
   const filterScrim = document.getElementById("filter-scrim");
   const confirmFilter = document.getElementById("confirm-filter");
   const resetFilters = document.getElementById("reset-filters");
+  const searchHomeState = document.getElementById("search-home-state");
+  const searchHistoryList = document.getElementById("search-history-list");
+  const clearSearchHistory = document.getElementById("clear-search-history");
+  const searchScreen = document.querySelector(".search-screen");
   const params = new URLSearchParams(window.location.search);
   const filters = { sort: "default", time: "all", location: "all" };
+  const SEARCH_HISTORY_KEY = "campus-lost-found-search-history";
 
-  keyword.value = params.get("keyword") || "校园卡";
+  keyword.value = params.get("keyword") || "";
+
+  function readSearchHistory() {
+    try {
+      const saved = window.localStorage.getItem(SEARCH_HISTORY_KEY);
+      const history = saved ? JSON.parse(saved) : [];
+      return Array.isArray(history) ? history.filter(Boolean).map(String) : [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function saveSearchTerm(value) {
+    const term = value.trim();
+    if (!term) return;
+    const history = readSearchHistory().filter(item => item !== term);
+    history.unshift(term);
+    try {
+      window.localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(history.slice(0, 8)));
+    } catch (error) {
+      // Search still works when localStorage is unavailable.
+    }
+  }
+
+  function renderSearchHistory() {
+    const history = readSearchHistory();
+    searchHistoryList.innerHTML = history.length
+      ? history.map(term => `<button type="button" data-search-term="${escapeHtml(term)}">${escapeHtml(term)}</button>`).join("")
+      : '<p class="empty-search-history">暂无搜索记录</p>';
+    searchHistoryList.querySelectorAll("[data-search-term]").forEach(button => {
+      button.addEventListener("click", () => openSearchTerm(button.dataset.searchTerm));
+    });
+  }
+
+  function escapeHtml(value) {
+    return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+
+  function openSearchTerm(term) {
+    keyword.value = term;
+    saveSearchTerm(term);
+    params.set("keyword", term);
+    window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
+    render();
+  }
+
+  if (keyword.value.trim()) saveSearchTerm(keyword.value);
 
   function locationMatches(item, value) {
     if (value === "all") return true;
@@ -40,6 +91,20 @@
 
   function render() {
     const key = keyword.value.trim().toLowerCase();
+    const hasKeyword = Boolean(key);
+    searchHomeState.classList.toggle("hidden", hasKeyword);
+    searchScreen.classList.toggle("is-search-home", !hasKeyword);
+
+    if (!hasKeyword) {
+      grid.innerHTML = "";
+      resultsHeading.classList.add("hidden");
+      noResults.classList.add("hidden");
+      document.getElementById("search-suggestion").classList.add("hidden");
+      clearKeyword.classList.add("hidden");
+      renderSearchHistory();
+      return;
+    }
+
     let items = CampusData.readItems().filter(item => {
       const matchesKeyword = !key || [item.name, item.category, item.location, item.description].join(" ").toLowerCase().includes(key);
       return matchesKeyword && locationMatches(item, filters.location) && timeMatches(item, filters.time);
@@ -66,6 +131,9 @@
 
   form.addEventListener("submit", event => {
     event.preventDefault();
+    saveSearchTerm(keyword.value);
+    params.set("keyword", keyword.value.trim());
+    window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
     render();
   });
   keyword.addEventListener("input", render);
@@ -73,6 +141,13 @@
     keyword.value = "";
     render();
     keyword.focus();
+  });
+  clearSearchHistory.addEventListener("click", () => {
+    window.localStorage.removeItem(SEARCH_HISTORY_KEY);
+    renderSearchHistory();
+  });
+  document.querySelectorAll("#popular-search-list [data-search-term]").forEach(button => {
+    button.addEventListener("click", () => openSearchTerm(button.dataset.searchTerm));
   });
   openFilter.addEventListener("click", () => setOverlay(true));
   closeFilter.addEventListener("click", () => setOverlay(false));
