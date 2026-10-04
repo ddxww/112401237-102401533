@@ -1,5 +1,7 @@
 /* A 模块先使用本地示例数据；B 同学接入 localStorage 时保持同样的字段结构。 */
 (function () {
+  const ITEMS_STORAGE_KEY = "campus-lost-found-items";
+  const VIEWED_ITEMS_STORAGE_KEY = "campus-lost-found-viewed-items";
   const campusLocations = [
     "图书馆", "图书馆二楼", "中楼", "中楼 301", "东一", "东二", "东三",
     "西一", "西二", "西三", "文科楼", "理科楼", "京元餐厅", "丁香园",
@@ -16,6 +18,39 @@
     { id: "found-cup-001", type: "found", name: "蓝色保温杯", category: "日用品", location: "第一田径场", date: "昨天 16:08", description: "蓝色保温杯，在第一田径场看台附近发现。", contact: "QQ：13579246", imageClass: "icon-cyan", icon: "cup", status: "active", publisher: "拾光志愿者", views: 64, createdAt: "2026-10-03T16:08:00" }
   ];
 
+  // The project has no account system yet, so localStorage represents one browser user.
+  let memoryItems = null;
+  const memoryViewedItems = new Set();
+
+  function readViewedItemIds() {
+    try {
+      const saved = window.localStorage.getItem(VIEWED_ITEMS_STORAGE_KEY);
+      const ids = saved ? JSON.parse(saved) : [];
+      return new Set(Array.isArray(ids) ? ids.map(String) : []);
+    } catch (error) {
+      return new Set(memoryViewedItems);
+    }
+  }
+
+  function writeViewedItemIds(ids) {
+    memoryViewedItems.clear();
+    ids.forEach(id => memoryViewedItems.add(String(id)));
+    try {
+      window.localStorage.setItem(VIEWED_ITEMS_STORAGE_KEY, JSON.stringify([...ids]));
+    } catch (error) {
+      // Keep the in-memory fallback when localStorage is unavailable.
+    }
+  }
+
+  function writeItems(items) {
+    memoryItems = items;
+    try {
+      window.localStorage.setItem(ITEMS_STORAGE_KEY, JSON.stringify(items));
+    } catch (error) {
+      // Keep the in-memory fallback when localStorage is unavailable.
+    }
+  }
+
   function normalizeItem(item) {
     if (item.location !== "京灵餐厅") return item;
     return {
@@ -26,8 +61,9 @@
   }
 
   function readItems() {
+    if (memoryItems) return memoryItems.map(normalizeItem);
     try {
-      const saved = window.localStorage.getItem("campus-lost-found-items");
+      const saved = window.localStorage.getItem(ITEMS_STORAGE_KEY);
       if (saved) {
         const storedItems = JSON.parse(saved).map(normalizeItem);
         const missingSeeds = seedItems.filter(seed => !storedItems.some(item => item.id === seed.id));
@@ -36,7 +72,7 @@
     } catch (error) {
       console.warn("无法读取本地数据，将使用示例数据。", error);
     }
-    return seedItems.map(normalizeItem);
+    return (memoryItems || seedItems).map(normalizeItem);
   }
 
   function getItemById(id) {
@@ -51,5 +87,27 @@
 
   function getCampusLocations() { return campusLocations.slice(); }
 
-  window.CampusData = { readItems, getItemById, getTypeLabel, getStatusLabel, getCampusLocations };
+  function recordView(id) {
+    const itemId = String(id || "");
+    if (!itemId) return null;
+
+    const items = readItems();
+    const item = items.find(entry => entry.id === itemId);
+    if (!item) return null;
+
+    const viewedIds = readViewedItemIds();
+    if (viewedIds.has(itemId)) return { ...item, added: false };
+
+    const updatedItems = items.map(entry => entry.id === itemId
+      ? { ...entry, views: (Number(entry.views) || 0) + 1 }
+      : entry
+    );
+    writeItems(updatedItems);
+    viewedIds.add(itemId);
+    writeViewedItemIds(viewedIds);
+
+    return { ...updatedItems.find(entry => entry.id === itemId), added: true };
+  }
+
+  window.CampusData = { readItems, getItemById, getTypeLabel, getStatusLabel, getCampusLocations, recordView };
 })();

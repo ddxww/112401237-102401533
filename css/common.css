@@ -163,3 +163,25 @@ body > main { flex: 1; min-height: 0; overflow-y: auto; }
 .status-pill.active { background: #fff1d8; color: #ff9a00; }
 .status-pill.completed { background: #e1f7eb; color: #129966; }
 .view-count { color: #9aa6b8; font-size: 12px; }
+
+/* Final frameless canvas overrides. Keep the original 390 x 844 page size. */
+html { background: #edf0f3; }
+body {
+  width: 390px;
+  max-width: calc(100vw - 32px);
+  height: min(844px, calc(100dvh - 32px));
+  min-height: 0;
+  margin: 16px auto;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: #fff;
+}
+body:has(.phone-screen) { background: #fff; }
+.phone-screen { border-radius: 0; }
+.status-bar { display: none !important; }
+
+@media (max-width: 540px) {
+  html { background: #fff; }
+  body { width: 100%; max-width: none; height: 100dvh; margin: 0; }
+}

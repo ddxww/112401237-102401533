@@ -1,7 +1,7 @@
 (function () {
   const container = document.getElementById("detail-content");
   const id = new URLSearchParams(window.location.search).get("id") || "lost-card-001";
-  const item = CampusData.getItemById(id);
+  const initialItem = CampusData.getItemById(id);
   const toast = document.getElementById("copy-toast");
 
   function notify(message) {
@@ -10,10 +10,14 @@
     window.setTimeout(() => toast.classList.add("hidden"), 1800);
   }
 
-  if (!item) {
+  if (!initialItem) {
     container.innerHTML = '<div class="not-found"><h2>找不到这条信息</h2><p>它可能已经被移除，或链接已经失效。</p></div>';
     return;
   }
+
+  // Count only the first detail-page visit from this browser for this item.
+  CampusData.recordView(id);
+  const item = CampusData.getItemById(id) || initialItem;
 
   document.title = `${item.name} | 拾光`;
   const statusClass = item.status === "completed" ? "completed" : "active";
