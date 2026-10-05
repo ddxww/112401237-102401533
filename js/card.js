@@ -21,13 +21,16 @@
   function itemCard(item) {
     const statusClass = item.status === "completed" ? "completed" : "active";
     const detailPath = window.location.pathname.includes("/pages/") ? "./detail.html" : "./pages/detail.html";
+    const isHomePage = window.location.pathname.endsWith("/index.html") || window.location.pathname.endsWith("/");
+    const homeCategory = isHomePage ? new URLSearchParams(window.location.search).get("category") || "all" : "";
+    const homeReturnParams = isHomePage ? `&from=home&category=${encodeURIComponent(homeCategory)}` : "";
     const firstImage = Array.isArray(item.images) && item.images.length ? item.images[0] : "";
     const thumbContent = firstImage
       ? `<img class="item-thumb-image" src="${escapeHtml(firstImage)}" alt="${escapeHtml(item.name)}图片">`
       : `<span class="item-emoji" aria-hidden="true">${iconSvg(item.icon)}</span>`;
     return `
       <article class="item-card">
-        <a class="item-card-link" href="${detailPath}?id=${encodeURIComponent(item.id)}">
+        <a class="item-card-link" href="${detailPath}?id=${encodeURIComponent(item.id)}${homeReturnParams}">
           <div class="item-thumb ${item.imageClass}">
             <span class="item-type ${item.type}">${CampusData.getTypeLabel(item.type)}</span>
             ${thumbContent}
