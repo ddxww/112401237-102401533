@@ -31,6 +31,7 @@
   document.title = `${item.name} | 拾光`;
   const statusClass = item.status === "completed" ? "completed" : "active";
   const categoryLabel = item.category === "证件" ? "证件卡类 · 校园一卡通" : `${item.category} · 校园物品`;
+  const publisherName = String(item.publisher || "");
   const contactText = item.contact || "暂无联系方式";
   const images = Array.isArray(item.images)
     ? item.images.filter(image => typeof image === "string" && image.trim()).slice(0, 3)
@@ -65,8 +66,8 @@
         <div class="info-item place"><span class="place-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></span><div><small>可能地点</small><strong>${item.location}</strong></div></div>
       </section>
       <section class="publisher-card">
-        <span class="publisher-avatar">${item.publisher.slice(0, 1)}</span>
-        <div class="publisher-info"><strong>${item.publisher}</strong><p class="publisher-contact"><span id="contact-value">${contactText}</span><button class="copy-contact" id="copy-contact" type="button" aria-label="复制联系方式"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>复制</span></button></p></div>
+        <span class="publisher-avatar">${escapeHtml(publisherName.slice(0, 1))}</span>
+        <div class="publisher-info"><strong>${escapeHtml(publisherName)}</strong><p class="publisher-contact"><span id="contact-value">${escapeHtml(contactText)}</span><button class="copy-contact" id="copy-contact" type="button" aria-label="复制联系方式"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0 2 2v8a2 2 0 0 0 2 2h2"/></svg><span>复制</span></button></p></div>
         <time>12分钟前</time>
       </section>
     </article>`;

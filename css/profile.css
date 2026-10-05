@@ -251,6 +251,27 @@
   text-decoration: none;
 }
 
+.profile-page .post-actions,
+.my-posts-page .post-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-page button.post-action,
+.my-posts-page button.post-action {
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.profile-page .post-delete-action,
+.my-posts-page .post-delete-action {
+  color: #c96b77;
+  background: #fff0f1;
+}
+
 .profile-page .comment-card {
   padding: 14px;
   border-radius: var(--ui-radius);

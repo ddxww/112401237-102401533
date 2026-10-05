@@ -190,6 +190,28 @@
     return readItems().filter(item => item.publisherId === ownerId);
   }
 
+  function updateMyProfile(profile) {
+    const values = profile || {};
+    const name = String(values.name || "").trim();
+    const contact = String(values.contact || "").trim();
+    const items = readItems();
+    let updated = false;
+
+    const updatedItems = items.map(item => {
+      if (item.publisherId !== "current-user") return item;
+      updated = true;
+      return {
+        ...item,
+        publisher: name || item.publisher,
+        contact: contact || item.contact
+      };
+    });
+
+    // writeItems updates both the in-memory cache and the shared localStorage data.
+    if (updated) writeItems(updatedItems);
+    return true;
+  }
+
   function updateStatus(id, status) {
     const itemId = String(id || "");
     const nextStatus = String(status || "");
@@ -205,6 +227,67 @@
     );
     writeItems(updatedItems);
     return updatedItems.find(entry => entry.id === itemId) || null;
+  }
+
+  function removeItemFromFavorites(itemId) {
+    memoryFavorites.forEach((ids, ownerId) => {
+      memoryFavorites.set(ownerId, ids.filter(id => String(id) !== itemId));
+    });
+
+    try {
+      const saved = window.localStorage.getItem(FAVORITES_STORAGE_KEY);
+      if (!saved) return;
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        window.localStorage.setItem(
+          FAVORITES_STORAGE_KEY,
+          JSON.stringify(parsed.filter(id => String(id) !== itemId))
+        );
+        return;
+      }
+      if (parsed && typeof parsed === "object") {
+        Object.keys(parsed).forEach(ownerId => {
+          if (Array.isArray(parsed[ownerId])) {
+            parsed[ownerId] = parsed[ownerId].filter(id => String(id) !== itemId);
+          }
+        });
+        window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(parsed));
+      }
+    } catch (error) {
+      // Keep the in-memory fallback when localStorage is unavailable.
+    }
+  }
+
+  function removeItemFromViewedHistory(itemId) {
+    memoryViewedItems.delete(itemId);
+    try {
+      const saved = window.localStorage.getItem(VIEWED_ITEMS_STORAGE_KEY);
+      if (!saved) return;
+      const ids = JSON.parse(saved);
+      if (Array.isArray(ids)) {
+        window.localStorage.setItem(
+          VIEWED_ITEMS_STORAGE_KEY,
+          JSON.stringify(ids.filter(id => String(id) !== itemId))
+        );
+      }
+    } catch (error) {
+      // Keep the in-memory fallback when localStorage is unavailable.
+    }
+  }
+
+  function deleteItem(id, publisherId) {
+    const itemId = String(id || "");
+    const ownerId = String(publisherId || "current-user");
+    if (!itemId) return false;
+
+    const items = readItems();
+    const item = items.find(entry => entry.id === itemId);
+    if (!item || item.publisherId !== ownerId) return false;
+
+    writeItems(items.filter(entry => entry.id !== itemId));
+    removeItemFromFavorites(itemId);
+    removeItemFromViewedHistory(itemId);
+    return true;
   }
 
   function getMyFavorites(userId) {
@@ -259,7 +342,9 @@
     getItemCategories,
     createItem,
     getMyItems,
+    updateMyProfile,
     updateStatus,
+    deleteItem,
     getMyFavorites,
     isFavorite,
     toggleFavorite,

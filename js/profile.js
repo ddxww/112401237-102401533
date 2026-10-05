@@ -42,7 +42,7 @@
 
   function card(item, withAction) {
     var detailHref = "./detail.html?id=" + encodeURIComponent(item.id);
-    var action = withAction ? "<a class=\"post-action\" href=\"./status.html?id=" + encodeURIComponent(item.id) + "\">修改状态</a>" : "";
+    var action = withAction ? "<div class=\"post-actions\"><a class=\"post-action\" href=\"./status.html?id=" + encodeURIComponent(item.id) + "\">修改状态</a><button class=\"post-action post-delete-action\" type=\"button\" data-delete-item=\"" + escapeHtml(item.id) + "\">删除</button></div>" : "";
     var statusClass = item.status === "completed" ? "completed" : "active";
     return "<article class=\"post-card\"><a class=\"post-detail-link\" href=\"" + detailHref + "\"><div class=\"post-icon " + escapeHtml(item.imageClass || "icon-blue") + "\" aria-hidden=\"true\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14v16H5zM8 8h8M8 12h6M8 16h4\"/></svg></div><div class=\"post-copy\"><div class=\"post-meta\"><span>" + typeLabel(item) + "</span><strong class=\"" + statusClass + "\">" + statusLabel(item) + "</strong></div><h3>" + escapeHtml(item.name) + "</h3><p>" + escapeHtml(item.date) + " · " + escapeHtml(item.location) + "</p></div></a>" + action + "</article>";
   }
@@ -87,6 +87,22 @@
     if (count) count.textContent = items.length + " 条";
     list.innerHTML = items.map(function (item) { return card(item, true); }).join("") || "<p class=\"empty-state\">还没有发布信息</p>";
   }
+
+  document.addEventListener("click", function (event) {
+    var button = event.target.closest("[data-delete-item]");
+    if (!button) return;
+
+    var itemId = button.getAttribute("data-delete-item");
+    if (!window.confirm("确定要删除这条发布信息吗？")) return;
+
+    var success = typeof CampusData.deleteItem === "function" && CampusData.deleteItem(itemId, USER_ID);
+    if (!success) {
+      window.alert("删除失败，这条信息可能不存在或不属于当前用户。");
+      return;
+    }
+    renderProfile();
+    renderMyPosts();
+  });
 
   window.MemberBProfile = { renderProfile: renderProfile, renderMyPosts: renderMyPosts };
   renderProfile();
