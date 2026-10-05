@@ -263,7 +263,7 @@
 .my-posts-page .post-action {
   display: inline-block;
   position: absolute;
-  top: 14px;
+  top: 16px;
   right: 14px;
   padding: 7px 10px;
   border-radius: 9px;
@@ -273,6 +273,44 @@
   line-height: 1.2;
   white-space: nowrap;
   text-decoration: none;
+}
+
+.profile-page .post-actions,
+.my-posts-page .post-actions {
+  position: absolute;
+  top: 16px;
+  right: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.profile-page .post-actions .post-action,
+.my-posts-page .post-actions .post-action {
+  position: static;
+  padding: 5px 8px;
+  font-size: 10px;
+}
+
+.profile-page .post-edit,
+.my-posts-page .post-edit {
+  display: inline-block;
+  padding: 5px 8px;
+  border-radius: 9px;
+  color: var(--ui-blue);
+  background: var(--ui-blue-soft);
+  font-size: 10px;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.profile-page .post-actions .post-delete,
+.my-posts-page .post-actions .post-delete {
+  position: static;
+  padding: 5px 8px;
+  font-size: 10px;
 }
 
 .profile-page .post-delete,
