@@ -319,7 +319,7 @@
     if (detailLink) detailLink.href = "./detail.html?id=" + encodeURIComponent(item.id);
   }
 
-  window.MemberBPublish = { today: today, validate: validate, initPublishPage: initPublishPage, initSuccessPage: initSuccessPage };
+  window.MemberBPublish = { today: today, validate: validate, initPublishPage: initPublishPage, initSuccessPage: initSuccessPage, renderLocations: renderLocations };
   initPublishPage();
   initSuccessPage();
 })();
