@@ -32,7 +32,7 @@
           var isMine = item && (item.publisherId === "current-user" || item.publisher === "校园用户");
           if (!isMine) return item;
           updated = true;
-          return Object.assign({}, item, { contact: value });
+          return Object.assign({}, item, { publisher: "林同学", contact: value });
         });
         if (updated) window.localStorage.setItem(itemsKey, JSON.stringify(nextItems));
       }
