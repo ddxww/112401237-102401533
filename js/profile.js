@@ -67,7 +67,7 @@
 
   function card(item, withAction) {
     var detailHref = "./detail.html?id=" + encodeURIComponent(item.id);
-    var action = withAction ? "<a class=\"post-action\" href=\"./status.html?id=" + encodeURIComponent(item.id) + "\">修改状态</a><button class=\"post-delete\" type=\"button\" data-delete-item=\"" + escapeHtml(item.id) + "\">删除</button>" : "";
+    var action = withAction ? "<div class=\"post-actions\"><a class=\"post-action\" href=\"./status.html?id=" + encodeURIComponent(item.id) + "\">修改状态</a><a class=\"post-edit\" href=\"./edit-post.html?id=" + encodeURIComponent(item.id) + "\">编辑</a><button class=\"post-delete\" type=\"button\" data-delete-item=\"" + escapeHtml(item.id) + "\">删除</button></div>" : "";
     var statusClass = item.status === "completed" ? "completed" : "active";
     var firstImage = Array.isArray(item.images) && item.images.length ? item.images[0] : "";
     var visual = firstImage
