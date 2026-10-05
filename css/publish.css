@@ -349,32 +349,69 @@
   font-weight: 400;
 }
 
-.publish-page .upload-box {
-  display: flex;
-  position: relative;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-height: 108px;
-  padding: 16px;
-  border: 1px dashed var(--ui-muted);
-  border-radius: var(--ui-radius);
-  color: var(--ui-muted);
-  background: var(--ui-card, #fff);
-  font-weight: 400;
-  text-align: center;
+.publish-page .image-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
 }
 
-.publish-page .upload-box input {
+.publish-page .image-upload-slot {
+  display: grid;
+  position: relative;
+  place-items: center;
+  align-content: center;
+  gap: 5px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  min-width: 0;
+  border: 1px dashed var(--ui-muted);
+  border-radius: calc(var(--ui-radius) - 4px);
+  color: var(--ui-muted);
+  background: var(--ui-card, #fff);
+  font-size: 11px;
+  font-weight: 400;
+  text-align: center;
+  cursor: pointer;
+}
+
+.publish-page .image-upload-slot svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: var(--ui-blue);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.publish-page .image-upload-slot input {
   position: absolute;
   inset: 0;
-  min-height: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
   cursor: pointer;
 }
 
-.publish-page .upload-box svg {
-  color: var(--ui-blue);
+.publish-page .image-upload-slot.has-image {
+  border-style: solid;
+  border-color: var(--ui-blue-soft);
+}
+
+.publish-page .image-upload-slot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.publish-page [data-error="image"] {
+  display: block;
+  min-height: 18px;
+  color: var(--ui-orange);
+  font-size: 12px;
 }
 
 .publish-page .form-message {
