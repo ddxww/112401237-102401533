@@ -280,6 +280,7 @@
   text-decoration: none;
 }
 
+.my-posts-page .page-back-icon,
 .contact-page .page-back-icon {
   display: grid;
   place-items: center;
@@ -290,6 +291,7 @@
   color: var(--ui-ink);
 }
 
+.my-posts-page .page-back-icon svg,
 .contact-page .page-back-icon svg {
   width: 24px;
   height: 24px;
@@ -300,6 +302,7 @@
   stroke-width: 2;
 }
 
+.my-posts-page .page-back-icon:hover,
 .contact-page .page-back-icon:hover {
   background: var(--ui-blue-soft);
   color: var(--ui-blue);
