@@ -271,6 +271,31 @@
   text-decoration: none;
 }
 
+.contact-page .page-back-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  color: var(--ui-ink);
+}
+
+.contact-page .page-back-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.contact-page .page-back-icon:hover {
+  background: var(--ui-blue-soft);
+  color: var(--ui-blue);
+}
+
 .browse-history-page .profile-section-heading h1,
 .contact-page h1 {
   margin: 0;
