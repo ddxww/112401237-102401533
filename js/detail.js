@@ -42,7 +42,7 @@
         <span class="gallery-counter" data-gallery-counter>1 / ${images.length}</span>` : ""}`
     : `<span class="item-emoji" aria-hidden="true">${CampusCard.iconSvg(item.icon)}</span>`;
   container.innerHTML = `
-    <div class="detail-visual ${item.imageClass}">
+    <div class="detail-visual ${images.length ? "has-image" : item.imageClass}">
       ${galleryMarkup}
     </div>
     <article class="detail-content">
@@ -62,7 +62,7 @@
       </section>
       <section class="detail-info">
         <div class="info-item time"><div><small>丢失时间</small><strong>${item.date}</strong></div></div>
-        <div class="info-item place"><div><small>可能地点</small><strong>${item.location}</strong></div></div>
+        <div class="info-item place"><span class="place-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></span><div><small>可能地点</small><strong>${item.location}</strong></div></div>
       </section>
       <section class="publisher-card">
         <span class="publisher-avatar">${item.publisher.slice(0, 1)}</span>
