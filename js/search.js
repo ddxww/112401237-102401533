@@ -17,7 +17,7 @@
   const clearSearchHistory = document.getElementById("clear-search-history");
   const searchScreen = document.querySelector(".search-screen");
   const params = new URLSearchParams(window.location.search);
-  const filters = { sort: "default", time: "all", location: "all" };
+  const filters = { sort: "default", time: "all", type: "all", status: "all", location: [] };
   const SEARCH_HISTORY_KEY = "campus-lost-found-search-history";
 
   keyword.value = params.get("keyword") || "";
@@ -78,8 +78,6 @@
     体育场馆: ["第一田径场", "第二田径场", "风雨操场"],
     宿舍区: ["一区学生公寓", "二区学生公寓", "三区学生公寓", "四区学生公寓", "五区学生公寓"]
   };
-  const knownLocations = new Set(Object.values(locationGroups).flat());
-
   function normalizeSearchText(value) {
     return String(value || "").trim().toLowerCase().replace(/\s+/g, "");
   }
@@ -88,8 +86,6 @@
     const name = normalizeSearchText(item.name);
     const category = normalizeSearchText(item.category);
     const description = normalizeSearchText(item.description);
-    const location = normalizeSearchText(item.location);
-    const locationQuery = [...knownLocations].find(place => normalizeSearchText(place) === key);
     let score = 0;
 
     // Names are the strongest signal: exact, prefix, then partial matches.
@@ -101,13 +97,8 @@
     if (category === key) score = Math.max(score, 600);
     else if (category.includes(key)) score = Math.max(score, 500);
 
-    // A location is searchable only when the query is itself a known campus location.
-    if (locationQuery && location === normalizeSearchText(locationQuery)) {
-      score = Math.max(score, 450);
-    }
-
-    // Very short words in descriptions create noisy results (for example, “书” in
-    // “在图书馆找到”). Require a more specific phrase for this low-priority match.
+    // Very short words in descriptions create noisy results. Require a more
+    // specific phrase for this low-priority match.
     if (key.length >= 2 && description.includes(key)) {
       score = Math.max(score, 200);
     }
@@ -115,12 +106,22 @@
     return score;
   }
 
-  function locationMatches(item, value) {
-    if (value === "all") return true;
+  function locationMatches(item, values) {
+    if (!values.length) return true;
     const location = String(item.location || "");
     const matchesGroup = group => group.some(place => location.includes(place));
-    if (value === "其他") return !Object.values(locationGroups).some(matchesGroup);
-    return locationGroups[value] ? matchesGroup(locationGroups[value]) : false;
+    return values.some(value => {
+      if (value === "其他") return !Object.values(locationGroups).some(matchesGroup);
+      return locationGroups[value] ? matchesGroup(locationGroups[value]) : false;
+    });
+  }
+
+  function typeMatches(item, value) {
+    return value === "all" || item.type === value;
+  }
+
+  function statusMatches(item, value) {
+    return value === "all" || item.status === value;
   }
 
   function timeMatches(item, value) {
@@ -150,7 +151,10 @@
     let items = CampusData.readItems()
       .map(item => ({ item, score: getKeywordScore(item, key) }))
       .filter(result => result.score > 0)
-      .filter(result => locationMatches(result.item, filters.location) && timeMatches(result.item, filters.time));
+      .filter(result => timeMatches(result.item, filters.time))
+      .filter(result => typeMatches(result.item, filters.type))
+      .filter(result => statusMatches(result.item, filters.status))
+      .filter(result => locationMatches(result.item, filters.location));
 
     if (filters.sort === "newest") {
       items.sort((a, b) => new Date(b.item.createdAt) - new Date(a.item.createdAt) || b.score - a.score);
@@ -201,7 +205,7 @@
     render();
   });
   resetFilters.addEventListener("click", () => {
-    Object.assign(filters, { sort: "default", time: "all", location: "all" });
+    Object.assign(filters, { sort: "default", time: "all", type: "all", status: "all", location: [] });
     document.querySelectorAll(".chip-group").forEach(group => {
       group.querySelectorAll(".chip").forEach((chip, index) => chip.classList.toggle("active", index === 0));
     });
@@ -211,8 +215,24 @@
   document.querySelectorAll(".chip-group").forEach(group => {
     const name = group.dataset.filterGroup;
     group.querySelectorAll(".chip").forEach(chip => chip.addEventListener("click", () => {
-      filters[name] = chip.dataset.value;
-      group.querySelectorAll(".chip").forEach(option => option.classList.toggle("active", option === chip));
+      const value = chip.dataset.value;
+      if (name !== "location") {
+        filters[name] = value;
+        group.querySelectorAll(".chip").forEach(option => option.classList.toggle("active", option === chip));
+        return;
+      }
+
+      if (value === "all") {
+        filters.location = [];
+        group.querySelectorAll(".chip").forEach(option => option.classList.toggle("active", option === chip));
+        return;
+      }
+
+      filters.location = filters.location.includes(value)
+        ? filters.location.filter(selected => selected !== value)
+        : [...filters.location, value];
+      group.querySelector('[data-value="all"]').classList.toggle("active", filters.location.length === 0);
+      chip.classList.toggle("active", filters.location.includes(value));
     }));
   });
 
