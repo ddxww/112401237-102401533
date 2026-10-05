@@ -11,7 +11,24 @@
   const heroSearch = document.querySelector(".hero-search");
   const heroSearchInput = heroSearch?.querySelector("input");
   let currentFilter = "all";
-  let currentCategory = "all";
+  const requestedCategory = new URLSearchParams(window.location.search).get("category");
+  const availableCategories = new Set([...categoryFilters].map(button => button.dataset.homeCategory));
+  let currentCategory = availableCategories.has(requestedCategory) ? requestedCategory : "all";
+
+  function syncCategoryUrl() {
+    const url = new URL(window.location.href);
+    if (currentCategory === "all") url.searchParams.delete("category");
+    else url.searchParams.set("category", currentCategory);
+    window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  }
+
+  function updateCategorySelection() {
+    categoryFilters.forEach(categoryButton => {
+      const active = categoryButton.dataset.homeCategory === currentCategory;
+      categoryButton.classList.toggle("active", active);
+      categoryButton.setAttribute("aria-selected", String(active));
+    });
+  }
 
   function updateCategoryScrollCue() {
     if (!categoryToolbar || !categoryScroll) return;
@@ -47,11 +64,8 @@
 
   categoryFilters.forEach(button => button.addEventListener("click", () => {
     currentCategory = button.dataset.homeCategory || "all";
-    categoryFilters.forEach(categoryButton => {
-      const active = categoryButton === button;
-      categoryButton.classList.toggle("active", active);
-      categoryButton.setAttribute("aria-selected", String(active));
-    });
+    updateCategorySelection();
+    syncCategoryUrl();
     render();
   }));
 
@@ -81,5 +95,6 @@
     window.location.href = target.href;
   });
 
+  updateCategorySelection();
   render();
 })();

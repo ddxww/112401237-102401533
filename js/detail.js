@@ -1,6 +1,14 @@
 (function () {
   const container = document.getElementById("detail-content");
-  const id = new URLSearchParams(window.location.search).get("id") || "lost-card-001";
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id") || "lost-card-001";
+  const detailBack = document.querySelector(".detail-back");
+  if (params.get("from") === "home" && detailBack) {
+    const homeUrl = new URL("../index.html", window.location.href);
+    const category = params.get("category");
+    if (category && category !== "all") homeUrl.searchParams.set("category", category);
+    detailBack.href = `${homeUrl.pathname}${homeUrl.search}`;
+  }
   const initialItem = CampusData.getItemById(id);
   const toast = document.getElementById("copy-toast");
 
@@ -30,7 +38,7 @@
 
   document.title = `${item.name} | 拾光`;
   const statusClass = item.status === "completed" ? "completed" : "active";
-  const categoryLabel = item.category === "证件" ? "证件卡类 · 校园一卡通" : `${item.category} · 校园物品`;
+  const categoryLabel = item.category;
   const publisherName = String(item.publisher || "");
   const contactText = item.contact || "暂无联系方式";
   const images = Array.isArray(item.images)
