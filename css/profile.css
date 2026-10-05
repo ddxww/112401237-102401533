@@ -169,6 +169,11 @@
   place-items: center;
   width: 84px;
   height: 84px;
+  min-width: 84px;
+  max-width: 84px;
+  max-height: 84px;
+  overflow: hidden;
+  box-sizing: border-box;
   border-radius: 13px;
   color: var(--ui-blue);
   background: var(--ui-blue-soft);
@@ -201,6 +206,8 @@
   display: block;
   width: 100%;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
   border-radius: inherit;
   object-fit: cover;
 }
@@ -375,6 +382,7 @@
   text-decoration: none;
 }
 
+.browse-history-page .page-back-icon,
 .my-posts-page .page-back-icon,
 .contact-page .page-back-icon,
 .status-page .page-back-icon {
@@ -387,6 +395,7 @@
   color: var(--ui-ink);
 }
 
+.browse-history-page .page-back-icon svg,
 .my-posts-page .page-back-icon svg,
 .contact-page .page-back-icon svg,
 .status-page .page-back-icon svg {
@@ -399,6 +408,7 @@
   stroke-width: 2;
 }
 
+.browse-history-page .page-back-icon:hover,
 .my-posts-page .page-back-icon:hover,
 .contact-page .page-back-icon:hover,
 .status-page .page-back-icon:hover {
@@ -518,6 +528,25 @@
   color: var(--ui-muted);
   font-size: 13px;
   text-decoration: none;
+}
+
+.status-page .primary-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: var(--ui-radius);
+  color: #fff;
+  background: var(--ui-blue);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.status-page .primary-button:hover {
+  background: color-mix(in srgb, var(--ui-blue) 88%, #000);
 }
 
 .status-page h1 {

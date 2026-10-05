@@ -182,6 +182,8 @@
         if (!slot) return;
         var oldPreview = slot.querySelector("img");
         if (oldPreview) oldPreview.remove();
+        var oldRemove = slot.querySelector(".image-remove");
+        if (oldRemove) oldRemove.remove();
         showError("image", "");
         var file = input.files && input.files[0];
         if (!file) {
@@ -200,6 +202,21 @@
         image.addEventListener("load", function () { URL.revokeObjectURL(image.src); }, { once: true });
         slot.classList.add("has-image");
         slot.appendChild(image);
+        var removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.className = "image-remove";
+        removeButton.setAttribute("aria-label", "删除这张图片");
+        removeButton.textContent = "×";
+        removeButton.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          input.value = "";
+          image.remove();
+          removeButton.remove();
+          slot.classList.remove("has-image");
+          showError("image", "");
+        });
+        slot.appendChild(removeButton);
       });
     });
   }
