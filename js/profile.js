@@ -71,7 +71,8 @@
     var completedFound = items.filter(function (item) { return item.status === "completed" && item.type === "found"; });
     var selected = tab === "favorites" ? favorites : (tab === "history" ? completedFound : items);
     var titleElement = document.querySelector("[data-list-title]");
-    if (titleElement) titleElement.textContent = "我的发布";
+    var title = tab === "favorites" ? "我的收藏" : (tab === "history" ? "归还记录" : "我的发布");
+    if (titleElement) titleElement.textContent = title;
     var countElement = document.querySelector("[data-filter-count]");
     if (countElement) countElement.textContent = selected.length + " 条";
     updateStats(items, favorites, comments);
