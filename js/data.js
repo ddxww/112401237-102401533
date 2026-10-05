@@ -107,12 +107,18 @@
     return categoryAliases[value] || (itemCategories.includes(value) ? value : "其他");
   }
 
+  function normalizeImages(images) {
+    if (!Array.isArray(images)) return [];
+    return images
+      .filter(image => typeof image === "string" && /^data:image\/(?:jpeg|png|webp);base64,[a-z0-9+/]+={0,2}$/i.test(image.trim()))
+      .map(image => image.trim())
+      .slice(0, 3);
+  }
+
   function normalizeItem(item) {
     const normalized = normalizeLocation(item.location);
     const isLocallyPublishedItem = String(item.id || "").startsWith("item-");
-    const images = Array.isArray(item.images)
-      ? item.images.filter(image => typeof image === "string" && image.trim()).slice(0, 3)
-      : [];
+    const images = normalizeImages(item.images);
     return {
       ...item,
       location: normalized.name,
@@ -158,9 +164,7 @@
     if (!name) return null;
 
     const normalized = normalizeLocation(values.location);
-    const images = Array.isArray(values.images)
-      ? values.images.filter(image => typeof image === "string" && image.trim()).slice(0, 3)
-      : [];
+    const images = normalizeImages(values.images);
     const item = {
       id: values.id || `item-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       type: values.type === "found" ? "found" : "lost",
@@ -214,13 +218,13 @@
 
   function updateItem(id, input, publisherId) {
     const itemId = String(id || "");
-    const ownerId = String(publisherId || "current-user");
-    if (!itemId) return null;
+    const ownerId = String(publisherId || "current-user").trim();
+    if (!itemId || ownerId !== "current-user") return null;
 
     const values = input || {};
     const items = readItems();
     const current = items.find(item => item.id === itemId);
-    if (!current || current.publisherId !== ownerId) return null;
+    if (!current || current.publisherId !== "current-user") return null;
 
     const has = key => Object.prototype.hasOwnProperty.call(values, key);
     const next = { ...current };
@@ -245,9 +249,7 @@
     }
     if (has("locationDetail")) next.locationDetail = String(values.locationDetail || "").trim();
     if (has("images")) {
-      next.images = Array.isArray(values.images)
-        ? values.images.filter(image => typeof image === "string" && image.trim()).slice(0, 3)
-        : [];
+      next.images = normalizeImages(values.images);
     }
 
     const updatedItems = items.map(item => item.id === itemId ? next : item);
