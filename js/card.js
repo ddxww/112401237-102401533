@@ -1,4 +1,13 @@
 (function () {
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   function iconSvg(type) {
     const paths = {
       card: '<rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M7 9h4M7 13h6M16 9h2"></path>',
@@ -12,12 +21,16 @@
   function itemCard(item) {
     const statusClass = item.status === "completed" ? "completed" : "active";
     const detailPath = window.location.pathname.includes("/pages/") ? "./detail.html" : "./pages/detail.html";
+    const firstImage = Array.isArray(item.images) && item.images.length ? item.images[0] : "";
+    const thumbContent = firstImage
+      ? `<img class="item-thumb-image" src="${escapeHtml(firstImage)}" alt="${escapeHtml(item.name)}图片">`
+      : `<span class="item-emoji" aria-hidden="true">${iconSvg(item.icon)}</span>`;
     return `
       <article class="item-card">
         <a class="item-card-link" href="${detailPath}?id=${encodeURIComponent(item.id)}">
           <div class="item-thumb ${item.imageClass}">
             <span class="item-type ${item.type}">${CampusData.getTypeLabel(item.type)}</span>
-            <span class="item-emoji" aria-hidden="true">${iconSvg(item.icon)}</span>
+            ${thumbContent}
           </div>
           <div class="item-body">
             <div class="item-card-head">
