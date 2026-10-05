@@ -207,8 +207,17 @@
 
 .profile-page .post-meta strong,
 .my-posts-page .post-meta strong {
-  color: var(--ui-orange);
   font-weight: 700;
+}
+
+.profile-page .post-meta strong.active,
+.my-posts-page .post-meta strong.active {
+  color: var(--ui-orange);
+}
+
+.profile-page .post-meta strong.completed,
+.my-posts-page .post-meta strong.completed {
+  color: var(--ui-green);
 }
 
 .profile-page .post-copy h3,
