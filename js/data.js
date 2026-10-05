@@ -3,6 +3,11 @@
   const ITEMS_STORAGE_KEY = "campus-lost-found-items";
   const VIEWED_ITEMS_STORAGE_KEY = "campus-lost-found-viewed-items";
   const FAVORITES_STORAGE_KEY = "campus-lost-found-favorites";
+  const itemCategories = ["证件", "数码", "钥匙", "生活用品", "书籍", "其他"];
+  const categoryAliases = {
+    "电子产品": "数码",
+    "日用品": "生活用品"
+  };
   const campusLocations = [
     "图书馆", "晋江楼", "中楼", "东一", "东二", "东三", "西一", "西二", "西三", "文一", "文二", "文三",
     "机械学院", "机电学院", "电气学院", "车辆工程", "化学学院", "材料学院", "生工学院", "环安学院", "土木学院", "建筑学院",
@@ -97,6 +102,11 @@
     return { name: raw || "其他", detail: "" };
   }
 
+  function normalizeCategory(category) {
+    const value = String(category || "").trim();
+    return categoryAliases[value] || (itemCategories.includes(value) ? value : "其他");
+  }
+
   function normalizeItem(item) {
     const normalized = normalizeLocation(item.location);
     const isLocallyPublishedItem = String(item.id || "").startsWith("item-");
@@ -107,6 +117,7 @@
       ...item,
       location: normalized.name,
       locationDetail: item.locationDetail || normalized.detail,
+      category: normalizeCategory(item.category),
       description: (item.description || "").replaceAll("京灵餐厅", "京元"),
       images,
       publisherId: item.publisherId || (isLocallyPublishedItem ? "current-user" : undefined)
@@ -139,6 +150,7 @@
   }
 
   function getCampusLocations() { return campusLocations.slice(); }
+  function getItemCategories() { return itemCategories.slice(); }
 
   function createItem(input) {
     const values = input || {};
@@ -153,7 +165,7 @@
       id: values.id || `item-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       type: values.type === "found" ? "found" : "lost",
       name,
-      category: String(values.category || "其他").trim(),
+      category: normalizeCategory(values.category),
       location: normalized.name,
       locationDetail: String(values.locationDetail || normalized.detail || "").trim(),
       date: String(values.dateLabel || values.date || "刚刚").trim(),
@@ -244,6 +256,7 @@
     getStatusLabel,
     getCampusLocations,
     getLocations: getCampusLocations,
+    getItemCategories,
     createItem,
     getMyItems,
     updateStatus,
