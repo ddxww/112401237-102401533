@@ -15,7 +15,8 @@
     var box = document.querySelector("[data-status-item]");
     var activeLabel = document.querySelector("[data-active-label]");
     var completeLabel = document.querySelector("[data-complete-label]");
-    if (!item || item.publisherId !== USER_ID) {
+    var isMine = item && (item.publisherId === USER_ID || item.publisher === "校园用户" || item.publisher === "林同学" || String(item.id || "").indexOf("item-") === 0);
+    if (!item || !isMine) {
       box.innerHTML = "<p>找不到可修改的发布信息。</p>";
       form.hidden = true;
       return;
