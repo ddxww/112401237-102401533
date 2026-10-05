@@ -159,6 +159,38 @@
     return (date.getMonth() + 1) + "月" + date.getDate() + "日";
   }
 
+  function initImageUpload(form) {
+    var inputs = Array.prototype.slice.call(form.querySelectorAll('input[name="image"]'));
+    if (!inputs.length) return;
+
+    inputs.forEach(function (input) {
+      input.addEventListener("change", function () {
+        var slot = input.closest(".image-upload-slot");
+        if (!slot) return;
+        var oldPreview = slot.querySelector("img");
+        if (oldPreview) oldPreview.remove();
+        showError("image", "");
+        var file = input.files && input.files[0];
+        if (!file) {
+          slot.classList.remove("has-image");
+          return;
+        }
+        if (!file.type || file.type.indexOf("image/") !== 0) {
+          showError("image", "只能选择图片文件");
+          input.value = "";
+          slot.classList.remove("has-image");
+          return;
+        }
+        var image = document.createElement("img");
+        image.alt = file.name || "已选择的物品图片";
+        image.src = URL.createObjectURL(file);
+        image.addEventListener("load", function () { URL.revokeObjectURL(image.src); }, { once: true });
+        slot.classList.add("has-image");
+        slot.appendChild(image);
+      });
+    });
+  }
+
   function submitPublish(event) {
     event.preventDefault();
     clearErrors();
@@ -207,6 +239,7 @@
       }
     }
     renderLocations();
+    initImageUpload(form);
     form.addEventListener("submit", submitPublish);
   }
 
