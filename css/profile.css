@@ -47,6 +47,9 @@
 }
 
 .profile-page .profile-header p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 4px;
   margin-top: 5px;
   color: var(--ui-muted);
   font-size: 13px;
@@ -148,10 +151,12 @@
 
 .profile-page .post-card,
 .my-posts-page .post-card {
+  position: relative;
   display: flex;
+  align-items: center;
   gap: 13px;
-  min-height: 118px;
-  padding: 14px;
+  min-height: 112px;
+  padding: 14px 12px;
   border-radius: var(--ui-radius);
   background: var(--ui-card, #fff);
   box-shadow: var(--ui-card-shadow, 0 6px 18px rgba(36, 68, 123, .08));
@@ -160,11 +165,11 @@
 .profile-page .post-icon,
 .my-posts-page .post-icon {
   display: grid;
-  flex: 0 0 64px;
+  flex: 0 0 84px;
   place-items: center;
-  width: 64px;
-  height: 64px;
-  border-radius: calc(var(--ui-radius) - 4px);
+  width: 84px;
+  height: 84px;
+  border-radius: 13px;
   color: var(--ui-blue);
   background: var(--ui-blue-soft);
 }
@@ -172,9 +177,10 @@
 .profile-page .post-detail-link,
 .my-posts-page .post-detail-link {
   display: flex;
+  align-items: center;
   min-width: 0;
   flex: 1;
-  gap: 13px;
+  gap: 12px;
   color: inherit;
   text-decoration: none;
 }
@@ -190,6 +196,15 @@
   stroke-width: 1.8;
 }
 
+.profile-page .post-icon-image,
+.my-posts-page .post-icon-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+}
+
 .profile-page .post-copy,
 .my-posts-page .post-copy {
   min-width: 0;
@@ -200,7 +215,7 @@
 .my-posts-page .post-meta {
   display: flex;
   gap: 8px;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   color: var(--ui-blue);
   font-size: 11px;
 }
@@ -223,16 +238,16 @@
 .profile-page .post-copy h3,
 .my-posts-page .post-copy h3 {
   overflow: hidden;
-  margin: 0 0 6px;
+  margin: 0 0 7px;
   color: var(--ui-ink);
-  font-size: 17px;
+  font-size: 16px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .profile-page .post-copy p,
 .my-posts-page .post-copy p {
-  margin: 0 0 8px;
+  margin: 0;
   color: var(--ui-muted);
   font-size: 12px;
 }
@@ -240,8 +255,10 @@
 .profile-page .post-action,
 .my-posts-page .post-action {
   display: inline-block;
-  align-self: flex-start;
-  padding: 5px 8px;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 7px 10px;
   border-radius: 9px;
   color: var(--ui-blue);
   background: var(--ui-blue-soft);
@@ -249,6 +266,84 @@
   line-height: 1.2;
   white-space: nowrap;
   text-decoration: none;
+}
+
+.profile-page .post-delete,
+.my-posts-page .post-delete {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  padding: 5px 10px;
+  border: 0;
+  border-radius: 8px;
+  color: #d85b79;
+  background: #fde8ef;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.profile-page .post-delete:hover,
+.my-posts-page .post-delete:hover {
+  background: #fbd8e3;
+}
+
+.delete-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(23, 33, 58, .28);
+}
+
+.delete-dialog-backdrop[hidden] {
+  display: none;
+}
+
+.delete-dialog {
+  width: min(100%, 290px);
+  padding: 20px;
+  border-radius: var(--ui-radius);
+  background: var(--ui-card, #fff);
+  box-shadow: var(--ui-card-shadow);
+}
+
+.delete-dialog h2 {
+  margin: 0 0 9px;
+  color: var(--ui-ink);
+  font-size: 18px;
+}
+
+.delete-dialog p {
+  margin: 0 0 18px;
+  color: var(--ui-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.delete-dialog-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.delete-dialog-actions button {
+  min-height: 38px;
+  border: 1px solid var(--ui-border, #dce3ef);
+  border-radius: 9px;
+  color: var(--ui-text);
+  background: var(--ui-page);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.delete-dialog-actions .confirm-delete {
+  border-color: #f5c4d1;
+  color: #c84d6d;
+  background: #fde8ef;
 }
 
 .profile-page .comment-card {
