@@ -67,15 +67,16 @@
     var items = getItems();
     var favorites = typeof CampusData.getMyFavorites === "function" ? resolveItems(CampusData.getMyFavorites(USER_ID)) : [];
     var comments = typeof CampusData.getMyComments === "function" ? CampusData.getMyComments(USER_ID) : [];
-    var tab = new URLSearchParams(window.location.search).get("tab") || "posts";
+    var tab = document.body.getAttribute("data-profile-view") || "posts";
     var completedFound = items.filter(function (item) { return item.status === "completed" && item.type === "found"; });
     var selected = tab === "favorites" ? favorites : (tab === "history" ? completedFound : items);
-    var title = tab === "favorites" ? "我的收藏" : (tab === "comments" ? "我的评论" : (tab === "history" ? "归还记录" : "我的发布"));
     var titleElement = document.querySelector("[data-list-title]");
+    var title = tab === "favorites" ? "我的收藏" : (tab === "history" ? "归还记录" : "我的发布");
     if (titleElement) titleElement.textContent = title;
+    var countElement = document.querySelector("[data-filter-count]");
+    if (countElement) countElement.textContent = selected.length + " 条";
     updateStats(items, favorites, comments);
-    if (tab === "comments") list.innerHTML = comments.map(function (comment) { return commentCard(comment, items); }).join("") || "<p class=\"empty-state\">还没有评论</p>";
-    else list.innerHTML = selected.map(function (item) { return card(item, tab === "posts"); }).join("") || "<p class=\"empty-state\">暂无内容</p>";
+    list.innerHTML = selected.map(function (item) { return card(item, tab === "posts"); }).join("") || "<p class=\"empty-state\">暂无内容</p>";
   }
 
   function renderMyPosts() {
