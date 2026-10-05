@@ -78,6 +78,42 @@
     体育场馆: ["第一田径场", "第二田径场", "风雨操场"],
     宿舍区: ["一区学生公寓", "二区学生公寓", "三区学生公寓", "四区学生公寓", "五区学生公寓"]
   };
+  const knownLocations = new Set(Object.values(locationGroups).flat());
+
+  function normalizeSearchText(value) {
+    return String(value || "").trim().toLowerCase().replace(/\s+/g, "");
+  }
+
+  function getKeywordScore(item, key) {
+    const name = normalizeSearchText(item.name);
+    const category = normalizeSearchText(item.category);
+    const description = normalizeSearchText(item.description);
+    const location = normalizeSearchText(item.location);
+    const locationQuery = [...knownLocations].find(place => normalizeSearchText(place) === key);
+    let score = 0;
+
+    // Names are the strongest signal: exact, prefix, then partial matches.
+    if (name === key) score = Math.max(score, 1000);
+    else if (name.startsWith(key)) score = Math.max(score, 850);
+    else if (name.includes(key)) score = Math.max(score, 700);
+
+    // Categories help users find a type of item without making location text count.
+    if (category === key) score = Math.max(score, 600);
+    else if (category.includes(key)) score = Math.max(score, 500);
+
+    // A location is searchable only when the query is itself a known campus location.
+    if (locationQuery && location === normalizeSearchText(locationQuery)) {
+      score = Math.max(score, 450);
+    }
+
+    // Very short words in descriptions create noisy results (for example, “书” in
+    // “在图书馆找到”). Require a more specific phrase for this low-priority match.
+    if (key.length >= 2 && description.includes(key)) {
+      score = Math.max(score, 200);
+    }
+
+    return score;
+  }
 
   function locationMatches(item, value) {
     if (value === "all") return true;
@@ -96,7 +132,7 @@
   }
 
   function render() {
-    const key = keyword.value.trim().toLowerCase();
+    const key = normalizeSearchText(keyword.value);
     const hasKeyword = Boolean(key);
     searchHomeState.classList.toggle("hidden", hasKeyword);
     searchScreen.classList.toggle("is-search-home", !hasKeyword);
@@ -111,18 +147,20 @@
       return;
     }
 
-    let items = CampusData.readItems().filter(item => {
-      const matchesKeyword = !key || [item.name, item.category, item.location, item.description].join(" ").toLowerCase().includes(key);
-      return matchesKeyword && locationMatches(item, filters.location) && timeMatches(item, filters.time);
-    });
+    let items = CampusData.readItems()
+      .map(item => ({ item, score: getKeywordScore(item, key) }))
+      .filter(result => result.score > 0)
+      .filter(result => locationMatches(result.item, filters.location) && timeMatches(result.item, filters.time));
 
     if (filters.sort === "newest") {
-      items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      items.sort((a, b) => new Date(b.item.createdAt) - new Date(a.item.createdAt) || b.score - a.score);
     } else if (filters.sort === "views") {
-      items.sort((a, b) => (b.views || 0) - (a.views || 0));
+      items.sort((a, b) => (b.item.views || 0) - (a.item.views || 0) || b.score - a.score);
+    } else {
+      items.sort((a, b) => b.score - a.score || new Date(b.item.createdAt) - new Date(a.item.createdAt));
     }
 
-    grid.innerHTML = items.map(CampusCard.itemCard).join("");
+    grid.innerHTML = items.map(result => CampusCard.itemCard(result.item)).join("");
     summary.textContent = `找到 ${items.length} 条相关结果`;
     resultsHeading.classList.toggle("hidden", items.length === 0);
     noResults.classList.toggle("hidden", items.length > 0);
