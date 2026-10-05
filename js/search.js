@@ -85,7 +85,6 @@
   function getKeywordScore(item, key) {
     const name = normalizeSearchText(item.name);
     const category = normalizeSearchText(item.category);
-    const description = normalizeSearchText(item.description);
     let score = 0;
 
     // Names are the strongest signal: exact, prefix, then partial matches.
@@ -96,12 +95,6 @@
     // Categories help users find a type of item without making location text count.
     if (category === key) score = Math.max(score, 600);
     else if (category.includes(key)) score = Math.max(score, 500);
-
-    // Very short words in descriptions create noisy results. Require a more
-    // specific phrase for this low-priority match.
-    if (key.length >= 2 && description.includes(key)) {
-      score = Math.max(score, 200);
-    }
 
     return score;
   }
@@ -166,7 +159,7 @@
 
     grid.innerHTML = items.map(result => CampusCard.itemCard(result.item)).join("");
     summary.textContent = `找到 ${items.length} 条相关结果`;
-    resultsHeading.classList.toggle("hidden", items.length === 0);
+    resultsHeading.classList.remove("hidden");
     noResults.classList.toggle("hidden", items.length > 0);
     document.getElementById("search-suggestion").classList.remove("hidden");
     clearKeyword.classList.toggle("hidden", !keyword.value);

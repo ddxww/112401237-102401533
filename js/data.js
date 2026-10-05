@@ -2,6 +2,7 @@
 (function () {
   const ITEMS_STORAGE_KEY = "campus-lost-found-items";
   const VIEWED_ITEMS_STORAGE_KEY = "campus-lost-found-viewed-items";
+  const FAVORITES_STORAGE_KEY = "campus-lost-found-favorites";
   const campusLocations = [
     "图书馆", "晋江楼", "中楼", "东一", "东二", "东三", "西一", "西二", "西三", "文一", "文二", "文三",
     "机械学院", "机电学院", "电气学院", "车辆工程", "化学学院", "材料学院", "生工学院", "环安学院", "土木学院", "建筑学院",
@@ -22,6 +23,7 @@
   // The project has no account system yet, so localStorage represents one browser user.
   let memoryItems = null;
   const memoryViewedItems = new Set();
+  const memoryFavorites = new Map();
 
   function readViewedItemIds() {
     try {
@@ -38,6 +40,35 @@
     ids.forEach(id => memoryViewedItems.add(String(id)));
     try {
       window.localStorage.setItem(VIEWED_ITEMS_STORAGE_KEY, JSON.stringify([...ids]));
+    } catch (error) {
+      // Keep the in-memory fallback when localStorage is unavailable.
+    }
+  }
+
+  function readFavoriteIds(userId) {
+    const ownerId = String(userId || "current-user");
+    try {
+      const saved = window.localStorage.getItem(FAVORITES_STORAGE_KEY);
+      if (!saved) return new Set(memoryFavorites.get(ownerId) || []);
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) return new Set(parsed.map(String));
+      const ids = parsed && Array.isArray(parsed[ownerId]) ? parsed[ownerId] : [];
+      return new Set(ids.map(String));
+    } catch (error) {
+      return new Set(memoryFavorites.get(ownerId) || []);
+    }
+  }
+
+  function writeFavoriteIds(userId, ids) {
+    const ownerId = String(userId || "current-user");
+    const values = [...ids].map(String);
+    memoryFavorites.set(ownerId, values);
+    try {
+      const saved = window.localStorage.getItem(FAVORITES_STORAGE_KEY);
+      const parsed = saved ? JSON.parse(saved) : {};
+      const favorites = Array.isArray(parsed) ? { "current-user": parsed } : (parsed || {});
+      favorites[ownerId] = values;
+      window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favorites));
     } catch (error) {
       // Keep the in-memory fallback when localStorage is unavailable.
     }
@@ -156,6 +187,26 @@
     return updatedItems.find(entry => entry.id === itemId) || null;
   }
 
+  function getMyFavorites(userId) {
+    return [...readFavoriteIds(userId)];
+  }
+
+  function isFavorite(id, userId) {
+    return readFavoriteIds(userId).has(String(id || ""));
+  }
+
+  function toggleFavorite(id, userId) {
+    const itemId = String(id || "");
+    if (!itemId || !getItemById(itemId)) return null;
+
+    const ids = readFavoriteIds(userId);
+    const saved = !ids.has(itemId);
+    if (saved) ids.add(itemId);
+    else ids.delete(itemId);
+    writeFavoriteIds(userId, ids);
+    return saved;
+  }
+
   function recordView(id) {
     const itemId = String(id || "");
     if (!itemId) return null;
@@ -188,6 +239,9 @@
     createItem,
     getMyItems,
     updateStatus,
+    getMyFavorites,
+    isFavorite,
+    toggleFavorite,
     recordView
   };
 })();
