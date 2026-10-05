@@ -43,7 +43,7 @@
             </div>
             <div class="item-footer">
               <span class="status-pill ${statusClass}">${CampusData.getStatusLabel(item)}</span>
-              <span class="view-count" aria-label="浏览次数">◉ ${item.views || 0}</span>
+              <span class="view-count" aria-label="浏览次数"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg>${item.views || 0}</span>
             </div>
           </div>
         </a>
