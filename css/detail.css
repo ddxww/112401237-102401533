@@ -14,6 +14,12 @@
 .detail-visual.icon-cyan { background: #e6f6fb; color: #315bd8; }
 .detail-visual .item-emoji { font-size: 0; }
 .detail-visual .item-emoji svg { fill: none; height: 52px; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; width: 52px; }
+.detail-gallery-image { height: 100%; object-fit: contain; width: 100%; }
+.gallery-prev, .gallery-next { align-items: center; background: rgba(23, 33, 58, .58); border-radius: 50%; color: #fff; display: flex; height: 34px; justify-content: center; padding: 0; position: absolute; top: 50%; transform: translateY(-50%); width: 34px; z-index: 1; }
+.gallery-prev { left: 12px; }
+.gallery-next { right: 12px; }
+.gallery-prev svg, .gallery-next svg { fill: none; height: 20px; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 2; width: 20px; }
+.gallery-counter { background: rgba(23, 33, 58, .58); border-radius: 999px; bottom: 12px; color: #fff; font-size: 12px; padding: 5px 9px; position: absolute; right: 12px; }
 .detail-content { padding: 18px 0 0; }
 .detail-kicker { align-items: center; display: flex; gap: 10px; margin-bottom: 9px; }
 .detail-kicker .status-pill { font-size: 13px; padding: 6px 12px; }

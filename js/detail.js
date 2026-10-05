@@ -4,6 +4,15 @@
   const initialItem = CampusData.getItemById(id);
   const toast = document.getElementById("copy-toast");
 
+  function escapeHtml(value) {
+    return String(value == null ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   function notify(message) {
     toast.textContent = message;
     toast.classList.remove("hidden");
@@ -23,9 +32,18 @@
   const statusClass = item.status === "completed" ? "completed" : "active";
   const categoryLabel = item.category === "证件" ? "证件卡类 · 校园一卡通" : `${item.category} · 校园物品`;
   const contactText = item.contact || "暂无联系方式";
+  const images = Array.isArray(item.images)
+    ? item.images.filter(image => typeof image === "string" && image.trim()).slice(0, 3)
+    : [];
+  const galleryMarkup = images.length
+    ? `<img class="detail-gallery-image" data-gallery-image src="${escapeHtml(images[0])}" alt="${escapeHtml(item.name)}图片 1">${images.length > 1 ? `
+        <button class="gallery-prev" type="button" aria-label="上一张图片"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg></button>
+        <button class="gallery-next" type="button" aria-label="下一张图片"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 5 7 7-7 7"/></svg></button>
+        <span class="gallery-counter" data-gallery-counter>1 / ${images.length}</span>` : ""}`
+    : `<span class="item-emoji" aria-hidden="true">${CampusCard.iconSvg(item.icon)}</span>`;
   container.innerHTML = `
     <div class="detail-visual ${item.imageClass}">
-      <span class="item-emoji" aria-hidden="true">${CampusCard.iconSvg(item.icon)}</span>
+      ${galleryMarkup}
     </div>
     <article class="detail-content">
       <div class="detail-kicker">
@@ -52,6 +70,27 @@
         <time>12分钟前</time>
       </section>
     </article>`;
+
+  if (images.length > 1) {
+    let galleryIndex = 0;
+    const galleryImage = container.querySelector("[data-gallery-image]");
+    const galleryCounter = container.querySelector("[data-gallery-counter]");
+
+    function renderGallery() {
+      galleryImage.src = images[galleryIndex];
+      galleryImage.alt = `${item.name}图片 ${galleryIndex + 1}`;
+      galleryCounter.textContent = `${galleryIndex + 1} / ${images.length}`;
+    }
+
+    container.querySelector(".gallery-prev").addEventListener("click", () => {
+      galleryIndex = (galleryIndex - 1 + images.length) % images.length;
+      renderGallery();
+    });
+    container.querySelector(".gallery-next").addEventListener("click", () => {
+      galleryIndex = (galleryIndex + 1) % images.length;
+      renderGallery();
+    });
+  }
 
   const saveButton = document.getElementById("save-detail");
   const favoriteUserId = "current-user";

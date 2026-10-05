@@ -100,11 +100,15 @@
   function normalizeItem(item) {
     const normalized = normalizeLocation(item.location);
     const isLocallyPublishedItem = String(item.id || "").startsWith("item-");
+    const images = Array.isArray(item.images)
+      ? item.images.filter(image => typeof image === "string" && image.trim()).slice(0, 3)
+      : [];
     return {
       ...item,
       location: normalized.name,
       locationDetail: item.locationDetail || normalized.detail,
       description: (item.description || "").replaceAll("京灵餐厅", "京元"),
+      images,
       publisherId: item.publisherId || (isLocallyPublishedItem ? "current-user" : undefined)
     };
   }
@@ -142,6 +146,9 @@
     if (!name) return null;
 
     const normalized = normalizeLocation(values.location);
+    const images = Array.isArray(values.images)
+      ? values.images.filter(image => typeof image === "string" && image.trim()).slice(0, 3)
+      : [];
     const item = {
       id: values.id || `item-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
       type: values.type === "found" ? "found" : "lost",
@@ -157,6 +164,7 @@
       status: "active",
       publisher: String(values.publisher || "校园用户").trim(),
       publisherId: String(values.publisherId || "current-user").trim(),
+      images,
       views: 0,
       createdAt: values.createdAt || new Date().toISOString()
     };
