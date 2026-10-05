@@ -61,11 +61,18 @@
       <span class="result-count" id="home-result-count">正在加载</span>
     </section>
 
-    <section class="section-heading">
-      <div>
-        <h2>最新消息</h2>
+    <section class="category-toolbar" aria-label="物品分类">
+      <button class="category-scroll-back" type="button" aria-label="返回前面的分类" hidden>‹</button>
+      <div class="category-scroll" role="tablist" aria-label="物品分类筛选">
+        <button class="category-filter active" data-home-category="all" role="tab" aria-selected="true">全部</button>
+        <button class="category-filter" data-home-category="证件" role="tab" aria-selected="false">证件</button>
+        <button class="category-filter" data-home-category="数码" role="tab" aria-selected="false">数码</button>
+        <button class="category-filter" data-home-category="钥匙" role="tab" aria-selected="false">钥匙</button>
+        <button class="category-filter" data-home-category="生活用品" role="tab" aria-selected="false">生活用品</button>
+        <button class="category-filter" data-home-category="书籍" role="tab" aria-selected="false">书籍</button>
+        <button class="category-filter" data-home-category="其他" role="tab" aria-selected="false">其他</button>
       </div>
-      <a class="text-link" href="./pages/search.html">刚刚更新</a>
+      <button class="category-scroll-cue" type="button" aria-label="查看后续分类" hidden>›</button>
     </section>
 
     <section class="item-grid" id="home-item-grid" aria-live="polite"></section>
