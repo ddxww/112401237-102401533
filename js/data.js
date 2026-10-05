@@ -212,6 +212,49 @@
     return true;
   }
 
+  function updateItem(id, input, publisherId) {
+    const itemId = String(id || "");
+    const ownerId = String(publisherId || "current-user");
+    if (!itemId) return null;
+
+    const values = input || {};
+    const items = readItems();
+    const current = items.find(item => item.id === itemId);
+    if (!current || current.publisherId !== ownerId) return null;
+
+    const has = key => Object.prototype.hasOwnProperty.call(values, key);
+    const next = { ...current };
+
+    if (has("type") && (values.type === "lost" || values.type === "found")) {
+      next.type = values.type;
+    }
+    if (has("name")) {
+      const name = String(values.name || "").trim();
+      if (name) next.name = name;
+    }
+    if (has("category")) next.category = normalizeCategory(values.category);
+    if (has("description")) next.description = String(values.description || "").trim();
+    if (has("contact")) next.contact = String(values.contact || "").trim();
+    if (has("dateLabel") || has("date")) {
+      next.date = String(has("dateLabel") ? values.dateLabel : values.date || "").trim();
+    }
+    if (has("location")) {
+      const normalized = normalizeLocation(values.location);
+      next.location = normalized.name;
+      if (!has("locationDetail") && normalized.detail) next.locationDetail = normalized.detail;
+    }
+    if (has("locationDetail")) next.locationDetail = String(values.locationDetail || "").trim();
+    if (has("images")) {
+      next.images = Array.isArray(values.images)
+        ? values.images.filter(image => typeof image === "string" && image.trim()).slice(0, 3)
+        : [];
+    }
+
+    const updatedItems = items.map(item => item.id === itemId ? next : item);
+    writeItems(updatedItems);
+    return next;
+  }
+
   function updateStatus(id, status) {
     const itemId = String(id || "");
     const nextStatus = String(status || "");
@@ -343,6 +386,7 @@
     createItem,
     getMyItems,
     updateMyProfile,
+    updateItem,
     updateStatus,
     deleteItem,
     getMyFavorites,
