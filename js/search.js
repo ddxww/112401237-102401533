@@ -59,11 +59,8 @@
   }
 
   function openSearchTerm(term) {
-    keyword.value = term;
     saveSearchTerm(term);
-    params.set("keyword", term);
-    window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
-    render();
+    window.location.href = `${window.location.pathname}?keyword=${encodeURIComponent(term)}`;
   }
 
   if (keyword.value.trim()) saveSearchTerm(keyword.value);
@@ -172,14 +169,20 @@
 
   form.addEventListener("submit", event => {
     event.preventDefault();
-    saveSearchTerm(keyword.value);
-    params.set("keyword", keyword.value.trim());
-    window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
-    render();
+    const term = keyword.value.trim();
+    if (!term) {
+      render();
+      return;
+    }
+    saveSearchTerm(term);
+    window.location.href = `${window.location.pathname}?keyword=${encodeURIComponent(term)}`;
   });
-  keyword.addEventListener("input", render);
+  keyword.addEventListener("input", () => {
+    clearKeyword.classList.toggle("hidden", !keyword.value);
+  });
   clearKeyword.addEventListener("click", () => {
     keyword.value = "";
+    window.history.replaceState(null, "", window.location.pathname);
     render();
     keyword.focus();
   });

@@ -3,7 +3,8 @@
   const empty = document.getElementById("home-empty");
   const count = document.getElementById("home-result-count");
   const segments = document.querySelectorAll("[data-home-filter]");
-  const heroSearchInput = document.querySelector(".hero-search input");
+  const heroSearch = document.querySelector(".hero-search");
+  const heroSearchInput = heroSearch?.querySelector("input");
   let currentFilter = "all";
 
   function render() {
@@ -23,8 +24,13 @@
     render();
   }));
 
-  // The home search field is an entry point to the dedicated search screen.
+  // The home page is only the search entry point. Search is submitted on the
+  // dedicated search page so the user can review recent and popular searches.
   heroSearchInput?.addEventListener("click", () => {
+    window.location.href = "./pages/search.html";
+  });
+  heroSearch?.addEventListener("submit", event => {
+    event.preventDefault();
     window.location.href = "./pages/search.html";
   });
 
