@@ -198,6 +198,14 @@
     if (!form) return;
     var dateInput = document.getElementById("publish-date");
     if (dateInput) dateInput.max = today();
+    var contactInput = form.querySelector('[name="contact"]');
+    if (contactInput) {
+      try {
+        contactInput.value = window.localStorage.getItem("campus-lost-found-contact") || "";
+      } catch (error) {
+        contactInput.value = "";
+      }
+    }
     renderLocations();
     form.addEventListener("submit", submitPublish);
   }

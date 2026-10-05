@@ -30,6 +30,16 @@
     return CampusData.getStatusLabel(item);
   }
 
+  function viewedCount() {
+    try {
+      var saved = window.localStorage.getItem("campus-lost-found-viewed-items");
+      var ids = saved ? JSON.parse(saved) : [];
+      return Array.isArray(ids) ? ids.length : 0;
+    } catch (error) {
+      return 0;
+    }
+  }
+
   function card(item, withAction) {
     var detailHref = "./detail.html?id=" + encodeURIComponent(item.id);
     var action = withAction ? "<a class=\"post-action\" href=\"./status.html?id=" + encodeURIComponent(item.id) + "\">修改状态</a>" : "";
@@ -46,7 +56,7 @@
     var active = items.length - completed;
     var stats = { all: items.length, active: active, completed: completed };
     Object.keys(stats).forEach(function (key) { var element = document.querySelector('[data-stat="' + key + '"]'); if (element) element.textContent = stats[key]; });
-    var counts = { posts: items.length, favorites: favorites.length, comments: comments.length, history: items.filter(function (item) { return item.status === "completed" && item.type === "found"; }).length };
+    var counts = { posts: items.length, favorites: favorites.length, comments: comments.length, history: items.filter(function (item) { return item.status === "completed" && item.type === "found"; }).length, viewed: viewedCount() };
     Object.keys(counts).forEach(function (key) { var element = document.querySelector('[data-count="' + key + '"]'); if (element) element.textContent = counts[key] + " 条"; });
   }
 
