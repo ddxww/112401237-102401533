@@ -53,11 +53,22 @@
       </section>
     </article>`;
 
-  document.getElementById("save-detail").addEventListener("click", event => {
-    event.currentTarget.classList.toggle("saved");
-    notify(event.currentTarget.classList.contains("saved") ? "已加入收藏" : "已取消收藏");
+  const saveButton = document.getElementById("save-detail");
+  const favoriteUserId = "current-user";
+
+  function updateFavoriteButton(saved) {
+    saveButton.classList.toggle("saved", saved);
+    saveButton.setAttribute("aria-label", saved ? "取消收藏" : "收藏");
+    saveButton.setAttribute("aria-pressed", String(saved));
+  }
+
+  updateFavoriteButton(CampusData.isFavorite(id, favoriteUserId));
+  saveButton.addEventListener("click", () => {
+    const saved = CampusData.toggleFavorite(id, favoriteUserId);
+    if (saved === null) return;
+    updateFavoriteButton(saved);
+    notify(saved ? "已加入收藏" : "已取消收藏");
   });
-  document.getElementById("share-detail").addEventListener("click", () => notify("分享卡片已生成"));
 
   async function copyContact() {
     try {
