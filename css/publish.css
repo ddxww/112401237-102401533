@@ -55,7 +55,9 @@
   gap: 7px;
   min-height: 48px;
   border-radius: calc(var(--ui-radius) - 4px);
-  color: var(--ui-muted);
+  color: var(--ui-ink);
+  background: #fff;
+  cursor: pointer;
   font-weight: 700;
 }
 
@@ -65,12 +67,8 @@
 }
 
 .publish-page .type-switch label:has(input:checked) {
-  color: var(--ui-blue);
-  background: var(--ui-page);
-}
-
-.publish-page .type-switch .icon-wrap {
-  display: inline-flex;
+  color: #fff;
+  background: var(--ui-blue);
 }
 
 .publish-page .type-switch svg,
@@ -200,7 +198,7 @@
   padding: 9px 10px;
   border: 0;
   border-radius: 10px;
-  color: var(--ui-text);
+  color: #111827;
   background: transparent;
   font: inherit;
   font-size: 13px;
@@ -211,8 +209,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: var(--ui-ink);
-  background: var(--ui-blue-soft);
+  color: #111827;
+  background: transparent;
   font-weight: 700;
 }
 
@@ -220,8 +218,8 @@
 .publish-page .location-option:hover,
 .publish-page .location-group-toggle:focus-visible,
 .publish-page .location-option:focus-visible {
-  color: var(--ui-blue);
-  background: var(--ui-blue-soft);
+  color: #111827;
+  background: #f3f4f6;
   outline: 0;
 }
 
@@ -254,8 +252,8 @@
 
 .publish-page .location-level-one,
 .publish-page .location-custom-entry {
-  color: var(--ui-blue);
-  background: var(--ui-page);
+  color: #111827;
+  background: transparent;
   font-weight: 700;
 }
 
