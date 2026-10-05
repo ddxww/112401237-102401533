@@ -68,11 +68,13 @@
 
   function normalizeItem(item) {
     const normalized = normalizeLocation(item.location);
+    const isLocallyPublishedItem = String(item.id || "").startsWith("item-");
     return {
       ...item,
       location: normalized.name,
       locationDetail: item.locationDetail || normalized.detail,
-      description: (item.description || "").replaceAll("京灵餐厅", "京元")
+      description: (item.description || "").replaceAll("京灵餐厅", "京元"),
+      publisherId: item.publisherId || (isLocallyPublishedItem ? "current-user" : undefined)
     };
   }
 
@@ -123,12 +125,35 @@
       icon: values.icon || "card",
       status: "active",
       publisher: String(values.publisher || "校园用户").trim(),
+      publisherId: String(values.publisherId || "current-user").trim(),
       views: 0,
       createdAt: values.createdAt || new Date().toISOString()
     };
 
     writeItems([item, ...readItems()]);
     return item;
+  }
+
+  function getMyItems(publisherId) {
+    const ownerId = String(publisherId || "current-user");
+    return readItems().filter(item => item.publisherId === ownerId);
+  }
+
+  function updateStatus(id, status) {
+    const itemId = String(id || "");
+    const nextStatus = String(status || "");
+    if (!itemId || !["active", "completed"].includes(nextStatus)) return null;
+
+    const items = readItems();
+    const item = items.find(entry => entry.id === itemId);
+    if (!item) return null;
+
+    const updatedItems = items.map(entry => entry.id === itemId
+      ? { ...entry, status: nextStatus }
+      : entry
+    );
+    writeItems(updatedItems);
+    return updatedItems.find(entry => entry.id === itemId) || null;
   }
 
   function recordView(id) {
@@ -161,6 +186,8 @@
     getCampusLocations,
     getLocations: getCampusLocations,
     createItem,
+    getMyItems,
+    updateStatus,
     recordView
   };
 })();
