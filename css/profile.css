@@ -11,7 +11,9 @@
 
 .profile-page,
 .my-posts-page,
-.status-page {
+.status-page,
+.browse-history-page,
+.contact-page {
   flex: 1 1 auto;
   width: auto;
   min-height: 0;
@@ -78,7 +80,7 @@
 
 .profile-page .profile-shortcuts {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   margin-bottom: 26px;
 }
@@ -258,6 +260,103 @@
   padding: 32px 12px;
   color: var(--ui-muted);
   text-align: center;
+}
+
+.browse-history-page .page-back,
+.contact-page .page-back {
+  display: inline-block;
+  margin-bottom: 14px;
+  color: var(--ui-muted);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.browse-history-page .profile-section-heading h1,
+.contact-page h1 {
+  margin: 0;
+  color: var(--ui-ink);
+  font-size: 22px;
+}
+
+.browse-history-page .profile-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.browse-history-page .profile-section-heading span {
+  color: var(--ui-muted);
+  font-size: 13px;
+}
+
+.browse-history-page .profile-list {
+  display: grid;
+  gap: 10px;
+}
+
+.browse-history-page .history-item {
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+  border-radius: var(--ui-radius);
+  color: var(--ui-ink);
+  background: var(--ui-card, #fff);
+  box-shadow: var(--ui-card-shadow, 0 6px 18px rgba(36, 68, 123, .08));
+  text-decoration: none;
+}
+
+.browse-history-page .history-item strong {
+  font-size: 16px;
+}
+
+.browse-history-page .history-item span,
+.browse-history-page .history-item small {
+  color: var(--ui-muted);
+  font-size: 12px;
+}
+
+.contact-page h1 {
+  margin-bottom: 8px;
+}
+
+.contact-intro {
+  margin: 0 0 22px;
+  color: var(--ui-muted);
+  font-size: 13px;
+}
+
+.contact-form {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-radius: var(--ui-radius);
+  background: var(--ui-card, #fff);
+  box-shadow: var(--ui-card-shadow, 0 6px 18px rgba(36, 68, 123, .08));
+}
+
+.contact-form label {
+  color: var(--ui-ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.contact-form input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1px solid var(--ui-border, #dce3ef);
+  border-radius: var(--ui-radius);
+  color: var(--ui-text);
+  background: var(--ui-page);
+  font: inherit;
+  box-sizing: border-box;
+}
+
+.contact-form .form-message {
+  min-height: 18px;
+  margin: 0;
+  color: var(--ui-green);
+  font-size: 13px;
 }
 
 .status-page .page-back,
