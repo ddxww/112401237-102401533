@@ -75,7 +75,10 @@
   });
   heroSearch?.addEventListener("submit", event => {
     event.preventDefault();
-    window.location.href = "./pages/search.html";
+    const keyword = heroSearchInput?.value.trim() || "";
+    const target = new URL("./pages/search.html", window.location.href);
+    if (keyword) target.searchParams.set("keyword", keyword);
+    window.location.href = target.href;
   });
 
   render();
