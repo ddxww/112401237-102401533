@@ -190,7 +190,7 @@
       document.getElementById("publish-form-message").textContent = "发布失败，请稍后重试";
       return;
     }
-    window.location.href = "../index.html";
+    window.location.href = "./publish-success.html?id=" + encodeURIComponent(item.id);
   }
 
   function initPublishPage() {
