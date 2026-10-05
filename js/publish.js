@@ -2,6 +2,7 @@
   "use strict";
 
   var USER_ID = "current-user";
+  var PROFILE_KEY = "campus-lost-found-profile";
   var ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
   var LOCATION_GROUPS = [
     { label: "图书馆", items: [] },
@@ -14,6 +15,17 @@
     { label: "宿舍区", items: ["一区学生公寓", "二区学生公寓", "三区学生公寓", "四区学生公寓", "五区学生公寓"] }
   ];
 
+  function readCurrentProfile() {
+    var profile = { name: "林同学", contact: "" };
+    try {
+      var saved = JSON.parse(window.localStorage.getItem(PROFILE_KEY) || "{}");
+      if (saved && typeof saved === "object") profile = Object.assign(profile, saved);
+      if (!profile.contact) profile.contact = window.localStorage.getItem("campus-lost-found-contact") || "";
+    } catch (error) {
+      // Use the default profile when localStorage is unavailable.
+    }
+    return profile;
+  }
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;");
   }
@@ -249,7 +261,7 @@
       dateLabel: formatDate(data.get("date")),
       description: String(data.get("description") || "").trim(),
       contact: String(data.get("contact") || "").trim(),
-      publisher: "校园用户",
+      publisher: readCurrentProfile().name,
       images: images
     });
     if (!item || !item.id) {
@@ -266,13 +278,7 @@
     var dateInput = document.getElementById("publish-date");
     if (dateInput) dateInput.max = today();
     var contactInput = form.querySelector('[name="contact"]');
-    if (contactInput) {
-      try {
-        contactInput.value = window.localStorage.getItem("campus-lost-found-contact") || "";
-      } catch (error) {
-        contactInput.value = "";
-      }
-    }
+    if (contactInput) contactInput.value = readCurrentProfile().contact || "";
     renderLocations();
     initImageUpload(form);
     form.addEventListener("submit", submitPublish);

@@ -2,6 +2,31 @@
   "use strict";
 
   var USER_ID = "current-user";
+  var PROFILE_KEY = "campus-lost-found-profile";
+  var DEFAULT_PROFILE = { name: "林同学", university: "福州大学", college: "信息学院", grade: "2024级" };
+
+  function readProfile() {
+    try {
+      var saved = JSON.parse(window.localStorage.getItem(PROFILE_KEY) || "{}");
+      return Object.assign({}, DEFAULT_PROFILE, saved);
+    } catch (error) {
+      return Object.assign({}, DEFAULT_PROFILE);
+    }
+  }
+
+  function renderProfileHeader() {
+    var profile = readProfile();
+    var avatar = document.querySelector("[data-profile-avatar]");
+    var name = document.querySelector("[data-profile-name]");
+    var university = document.querySelector("[data-profile-university]");
+    var college = document.querySelector("[data-profile-college]");
+    var grade = document.querySelector("[data-profile-grade]");
+    if (avatar) avatar.textContent = String(profile.name || DEFAULT_PROFILE.name).trim().charAt(0) || "林";
+    if (name) name.textContent = profile.name || DEFAULT_PROFILE.name;
+    if (university) university.textContent = profile.university || DEFAULT_PROFILE.university;
+    if (college) college.textContent = profile.college || DEFAULT_PROFILE.college;
+    if (grade) grade.textContent = profile.grade || DEFAULT_PROFILE.grade;
+  }
 
   function escapeHtml(value) {
     return String(value == null ? "" : value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\"/g, "&quot;").replace(/'/g, "&#039;");
@@ -42,9 +67,58 @@
 
   function card(item, withAction) {
     var detailHref = "./detail.html?id=" + encodeURIComponent(item.id);
-    var action = withAction ? "<a class=\"post-action\" href=\"./status.html?id=" + encodeURIComponent(item.id) + "\">修改状态</a>" : "";
+    var action = withAction ? "<a class=\"post-action\" href=\"./status.html?id=" + encodeURIComponent(item.id) + "\">修改状态</a><button class=\"post-delete\" type=\"button\" data-delete-item=\"" + escapeHtml(item.id) + "\">删除</button>" : "";
     var statusClass = item.status === "completed" ? "completed" : "active";
-    return "<article class=\"post-card\"><a class=\"post-detail-link\" href=\"" + detailHref + "\"><div class=\"post-icon " + escapeHtml(item.imageClass || "icon-blue") + "\" aria-hidden=\"true\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14v16H5zM8 8h8M8 12h6M8 16h4\"/></svg></div><div class=\"post-copy\"><div class=\"post-meta\"><span>" + typeLabel(item) + "</span><strong class=\"" + statusClass + "\">" + statusLabel(item) + "</strong></div><h3>" + escapeHtml(item.name) + "</h3><p>" + escapeHtml(item.date) + " · " + escapeHtml(item.location) + "</p></div></a>" + action + "</article>";
+    var firstImage = Array.isArray(item.images) && item.images.length ? item.images[0] : "";
+    var visual = firstImage
+      ? "<img class=\"post-icon-image\" src=\"" + escapeHtml(firstImage) + "\" alt=\"" + escapeHtml(item.name) + "图片\">"
+      : "<svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14v16H5zM8 8h8M8 12h6M8 16h4\"/></svg>";
+    return "<article class=\"post-card\"><a class=\"post-detail-link\" href=\"" + detailHref + "\"><div class=\"post-icon " + escapeHtml(item.imageClass || "icon-blue") + "\" aria-hidden=\"true\">" + visual + "</div><div class=\"post-copy\"><div class=\"post-meta\"><span>" + typeLabel(item) + "</span><strong class=\"" + statusClass + "\">" + statusLabel(item) + "</strong></div><h3>" + escapeHtml(item.name) + "</h3><p>" + escapeHtml(item.date) + " · " + escapeHtml(item.location) + "</p></div></a>" + action + "</article>";
+  }
+
+  function ensureDeleteDialog() {
+    var dialog = document.querySelector("[data-delete-dialog]");
+    if (dialog) return dialog;
+    dialog = document.createElement("div");
+    dialog.className = "delete-dialog-backdrop";
+    dialog.setAttribute("data-delete-dialog", "");
+    dialog.hidden = true;
+    dialog.innerHTML = "<div class=\"delete-dialog\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"delete-dialog-title\"><h2 id=\"delete-dialog-title\">是否要删除</h2><p>删除后该帖子及其相关信息将从列表中移除。</p><div class=\"delete-dialog-actions\"><button type=\"button\" data-delete-cancel>取消</button><button type=\"button\" class=\"confirm-delete\" data-delete-confirm>确认删除</button></div></div>";
+    document.body.appendChild(dialog);
+    return dialog;
+  }
+
+  function bindDeleteActions() {
+    var dialog = ensureDeleteDialog();
+    var pendingId = "";
+    document.querySelectorAll("[data-delete-item]").forEach(function (button) {
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        pendingId = button.getAttribute("data-delete-item") || "";
+        dialog.hidden = false;
+      });
+    });
+    var cancel = dialog.querySelector("[data-delete-cancel]");
+    var confirm = dialog.querySelector("[data-delete-confirm]");
+    cancel.onclick = function () { pendingId = ""; dialog.hidden = true; };
+    confirm.onclick = function () {
+      if (!pendingId) return;
+      if (!window.CampusData || typeof CampusData.deleteItem !== "function") {
+        dialog.querySelector("p").textContent = "共享数据模块暂未提供删除接口，请先同步公共数据模块。";
+        return;
+      }
+      var deleted = CampusData.deleteItem(pendingId, USER_ID);
+      if (!deleted) {
+        dialog.querySelector("p").textContent = "删除失败，该信息可能已不存在。";
+        return;
+      }
+      dialog.hidden = true;
+      pendingId = "";
+      renderProfile();
+      renderMyPosts();
+    };
+    dialog.addEventListener("click", function (event) { if (event.target === dialog) cancel.click(); });
   }
 
   function commentCard(comment, items) {
@@ -62,6 +136,7 @@
   }
 
   function renderProfile() {
+    renderProfileHeader();
     var list = document.querySelector("[data-profile-list]");
     if (!list || !window.CampusData) return;
     var items = getItems();
@@ -77,6 +152,7 @@
     if (countElement) countElement.textContent = selected.length + " 条";
     updateStats(items, favorites, comments);
     list.innerHTML = selected.map(function (item) { return card(item, tab === "posts"); }).join("") || "<p class=\"empty-state\">暂无内容</p>";
+    bindDeleteActions();
   }
 
   function renderMyPosts() {
@@ -86,6 +162,7 @@
     var count = document.querySelector("[data-post-count]");
     if (count) count.textContent = items.length + " 条";
     list.innerHTML = items.map(function (item) { return card(item, true); }).join("") || "<p class=\"empty-state\">还没有发布信息</p>";
+    bindDeleteActions();
   }
 
   window.MemberBProfile = { renderProfile: renderProfile, renderMyPosts: renderMyPosts };
