@@ -2,6 +2,7 @@
   "use strict";
 
   var USER_ID = "current-user";
+  var ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
   var LOCATION_GROUPS = [
     { label: "图书馆", items: [] },
     { label: "晋江楼", items: [] },
@@ -175,7 +176,7 @@
           slot.classList.remove("has-image");
           return;
         }
-        if (!file.type || file.type.indexOf("image/") !== 0) {
+        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
           showError("image", "只能选择图片文件");
           input.value = "";
           slot.classList.remove("has-image");
@@ -191,7 +192,29 @@
     });
   }
 
-  function submitPublish(event) {
+  function readImageAsDataUrl(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(reader.result); };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function collectImages() {
+    var inputs = Array.prototype.slice.call(document.querySelectorAll("[data-image-slot]"));
+    var images = [];
+    for (var index = 0; index < inputs.length; index += 1) {
+      var input = inputs[index];
+      var file = input.files && input.files[0];
+      if (!file) continue;
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) throw new Error("只能选择图片文件");
+      images.push(await readImageAsDataUrl(file));
+    }
+    return images.slice(0, 3);
+  }
+
+  async function submitPublish(event) {
     event.preventDefault();
     clearErrors();
     var form = event.currentTarget;
@@ -207,6 +230,16 @@
       document.getElementById("publish-form-message").textContent = "共享数据模块尚未加载";
       return;
     }
+    var submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) submitButton.disabled = true;
+    var images;
+    try {
+      images = await collectImages();
+    } catch (error) {
+      showError("image", error.message || "图片读取失败，请重新选择");
+      if (submitButton) submitButton.disabled = false;
+      return;
+    }
     var item = CampusData.createItem({
       type: data.get("type"),
       name: String(data.get("title") || "").trim(),
@@ -216,10 +249,12 @@
       dateLabel: formatDate(data.get("date")),
       description: String(data.get("description") || "").trim(),
       contact: String(data.get("contact") || "").trim(),
-      publisher: "林同学"
+      publisher: "校园用户",
+      images: images
     });
     if (!item || !item.id) {
       document.getElementById("publish-form-message").textContent = "发布失败，请稍后重试";
+      if (submitButton) submitButton.disabled = false;
       return;
     }
     window.location.href = "./publish-success.html?id=" + encodeURIComponent(item.id);

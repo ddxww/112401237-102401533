@@ -24,9 +24,9 @@
           <label class="form-field"><span>分类 <b>*</b></span><select name="category" required><option value="">请选择</option><option>证件</option><option>数码</option><option>钥匙</option><option>生活用品</option><option>书籍</option><option>其他</option></select><small data-error="category"></small></label>
         </div>
         <div class="form-field image-field"><span>物品图片</span><div class="image-upload-grid" data-image-grid aria-label="物品图片，最多 3 张">
-          <label class="image-upload-slot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM7 16l3-3 2 2 3-4 3 5M8 8h.01"/></svg><span>添加图片</span><input name="image" type="file" accept="image/*"></label>
-          <label class="image-upload-slot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM7 16l3-3 2 2 3-4 3 5M8 8h.01"/></svg><span>添加图片</span><input name="image" type="file" accept="image/*"></label>
-          <label class="image-upload-slot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM7 16l3-3 2 2 3-4 3 5M8 8h.01"/></svg><span>添加图片</span><input name="image" type="file" accept="image/*"></label>
+          <label class="image-upload-slot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM7 16l3-3 2 2 3-4 3 5M8 8h.01"/></svg><span>添加图片</span><input name="image" data-image-slot="1" type="file" accept="image/jpeg,image/png,image/webp"></label>
+          <label class="image-upload-slot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM7 16l3-3 2 2 3-4 3 5M8 8h.01"/></svg><span>添加图片</span><input name="image" data-image-slot="2" type="file" accept="image/jpeg,image/png,image/webp"></label>
+          <label class="image-upload-slot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4zM7 16l3-3 2 2 3-4 3 5M8 8h.01"/></svg><span>添加图片</span><input name="image" data-image-slot="3" type="file" accept="image/jpeg,image/png,image/webp"></label>
         </div><small data-error="image"></small></div>
         <label class="form-field"><span>特征描述 <b>*</b></span><textarea name="description" maxlength="240" required placeholder="描述颜色、品牌、明显特征等，帮助快速识别"></textarea><small data-error="description"></small></label>
         <div class="field-grid location-time-grid">
