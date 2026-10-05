@@ -43,7 +43,8 @@
   function card(item, withAction) {
     var detailHref = "./detail.html?id=" + encodeURIComponent(item.id);
     var action = withAction ? "<a class=\"post-action\" href=\"./status.html?id=" + encodeURIComponent(item.id) + "\">修改状态</a>" : "";
-    return "<article class=\"post-card\"><a class=\"post-detail-link\" href=\"" + detailHref + "\"><div class=\"post-icon " + escapeHtml(item.imageClass || "icon-blue") + "\" aria-hidden=\"true\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14v16H5zM8 8h8M8 12h6M8 16h4\"/></svg></div><div class=\"post-copy\"><div class=\"post-meta\"><span>" + typeLabel(item) + "</span><strong>" + statusLabel(item) + "</strong></div><h3>" + escapeHtml(item.name) + "</h3><p>" + escapeHtml(item.date) + " · " + escapeHtml(item.location) + "</p></div></a>" + action + "</article>";
+    var statusClass = item.status === "completed" ? "completed" : "active";
+    return "<article class=\"post-card\"><a class=\"post-detail-link\" href=\"" + detailHref + "\"><div class=\"post-icon " + escapeHtml(item.imageClass || "icon-blue") + "\" aria-hidden=\"true\"><svg viewBox=\"0 0 24 24\"><path d=\"M5 4h14v16H5zM8 8h8M8 12h6M8 16h4\"/></svg></div><div class=\"post-copy\"><div class=\"post-meta\"><span>" + typeLabel(item) + "</span><strong class=\"" + statusClass + "\">" + statusLabel(item) + "</strong></div><h3>" + escapeHtml(item.name) + "</h3><p>" + escapeHtml(item.date) + " · " + escapeHtml(item.location) + "</p></div></a>" + action + "</article>";
   }
 
   function commentCard(comment, items) {

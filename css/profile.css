@@ -207,8 +207,17 @@
 
 .profile-page .post-meta strong,
 .my-posts-page .post-meta strong {
-  color: var(--ui-orange);
   font-weight: 700;
+}
+
+.profile-page .post-meta strong.active,
+.my-posts-page .post-meta strong.active {
+  color: var(--ui-orange);
+}
+
+.profile-page .post-meta strong.completed,
+.my-posts-page .post-meta strong.completed {
+  color: var(--ui-green);
 }
 
 .profile-page .post-copy h3,
@@ -269,6 +278,37 @@
   color: var(--ui-muted);
   font-size: 13px;
   text-decoration: none;
+}
+
+.my-posts-page .page-back-icon,
+.contact-page .page-back-icon,
+.status-page .page-back-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  color: var(--ui-ink);
+}
+
+.my-posts-page .page-back-icon svg,
+.contact-page .page-back-icon svg,
+.status-page .page-back-icon svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.my-posts-page .page-back-icon:hover,
+.contact-page .page-back-icon:hover,
+.status-page .page-back-icon:hover {
+  background: var(--ui-blue-soft);
+  color: var(--ui-blue);
 }
 
 .browse-history-page .profile-section-heading h1,

@@ -184,7 +184,7 @@
       dateLabel: formatDate(data.get("date")),
       description: String(data.get("description") || "").trim(),
       contact: String(data.get("contact") || "").trim(),
-      publisher: "校园用户"
+      publisher: "林同学"
     });
     if (!item || !item.id) {
       document.getElementById("publish-form-message").textContent = "发布失败，请稍后重试";
