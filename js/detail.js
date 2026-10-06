@@ -49,7 +49,7 @@
         <button class="gallery-prev" type="button" aria-label="上一张图片"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 5-7 7 7 7"/></svg></button>
         <button class="gallery-next" type="button" aria-label="下一张图片"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m10 5 7 7-7 7"/></svg></button>
         <span class="gallery-counter" data-gallery-counter>1 / ${images.length}</span>` : ""}`
-    : `<span class="item-emoji" aria-hidden="true">${CampusCard.iconSvg(item.icon)}</span>`;
+    : `<span class="item-emoji default-item-placeholder" aria-hidden="true">${CampusCard.defaultItemIconSvg()}</span>`;
   container.innerHTML = `
     <div class="detail-visual ${images.length ? "has-image" : item.imageClass}">
       ${galleryMarkup}
