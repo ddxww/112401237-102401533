@@ -114,12 +114,35 @@
     return value === "all" || item.status === value;
   }
 
+  function getItemTime(item) {
+    const label = String(item.date || "").trim();
+    const timeMatch = label.match(/^(今天|昨天)\s+(\d{1,2}):(\d{2})$/);
+    const dateMatch = label.match(/^(\d{1,2})月(\d{1,2})日$/);
+    const now = new Date();
+
+    if (timeMatch) {
+      const date = new Date(now);
+      date.setDate(now.getDate() - (timeMatch[1] === "昨天" ? 1 : 0));
+      date.setHours(Number(timeMatch[2]), Number(timeMatch[3]), 0, 0);
+      return date.getTime();
+    }
+    if (dateMatch) {
+      return new Date(now.getFullYear(), Number(dateMatch[1]) - 1, Number(dateMatch[2])).getTime();
+    }
+
+    // Keep compatibility with records that still store an ISO date value.
+    const createdAt = new Date(item.createdAt).getTime();
+    return Number.isFinite(createdAt) ? createdAt : Number.NaN;
+  }
+
   function timeMatches(item, value) {
     if (value === "all") return true;
-    const createdAt = new Date(item.createdAt).getTime();
-    if (Number.isNaN(createdAt)) return true;
+    const itemTime = getItemTime(item);
+    if (Number.isNaN(itemTime)) return false;
+    const elapsed = Date.now() - itemTime;
+    if (elapsed < 0) return false;
     const days = value === "day" ? 1 : value === "week" ? 7 : 183;
-    return Date.now() - createdAt <= days * 24 * 60 * 60 * 1000;
+    return elapsed <= days * 24 * 60 * 60 * 1000;
   }
 
   function render() {
