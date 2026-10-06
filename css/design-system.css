@@ -113,6 +113,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .item-thumb { align-self: center; border-radius: 13px; display: flex; height: 84px; margin-left: 12px; width: 84px; }
 .item-thumb-image { display: block; height: 100%; object-fit: cover; width: 100%; }
 .item-emoji svg { fill: none; height: 30px; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; width: 30px; }
+.item-thumb .item-emoji .default-item-cube {
+  display: block;
+  height: 34px;
+  width: 34px;
+  color: var(--ui-blue);
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.2;
+}
 .item-body { padding: 15px 14px 12px 0; }
 .item-card-head { gap: 8px; }
 .item-card-head h3 { color: var(--ui-ink); font-size: 16px; line-height: 1.35; }

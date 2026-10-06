@@ -18,6 +18,15 @@
     return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">${paths[type] || paths.card}</svg>`;
   }
 
+  function defaultItemIconSvg() {
+    return `
+      <svg class="default-item-cube" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+        <path d="m24 6 16 9-16 9-16-9 16-9Z"></path>
+        <path d="M8 15v18l16 9 16-9V15"></path>
+        <path d="M24 24v18"></path>
+      </svg>`;
+  }
+
   function itemCard(item) {
     const statusClass = item.status === "completed" ? "completed" : "active";
     const detailPath = window.location.pathname.includes("/pages/") ? "./detail.html" : "./pages/detail.html";
@@ -27,7 +36,7 @@
     const firstImage = Array.isArray(item.images) && item.images.length ? item.images[0] : "";
     const thumbContent = firstImage
       ? `<img class="item-thumb-image" src="${escapeHtml(firstImage)}" alt="${escapeHtml(item.name)}图片">`
-      : `<span class="item-emoji" aria-hidden="true">${iconSvg(item.icon)}</span>`;
+      : `<span class="item-emoji default-item-placeholder" aria-hidden="true">${defaultItemIconSvg()}</span>`;
     return `
       <article class="item-card">
         <a class="item-card-link" href="${detailPath}?id=${encodeURIComponent(item.id)}${homeReturnParams}">
@@ -52,5 +61,5 @@
         </a>
       </article>`;
   }
-  window.CampusCard = { itemCard, iconSvg };
+  window.CampusCard = { itemCard, iconSvg, defaultItemIconSvg };
 })();
